@@ -8,7 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
-
+/**
+ *
+ * @author Trong Phu
+ */
 public interface IMovieService {
 
     public Movie crateMovie(MoviesDTO moviesDTO);

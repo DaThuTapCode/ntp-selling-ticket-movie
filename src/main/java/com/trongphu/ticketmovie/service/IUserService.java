@@ -6,7 +6,10 @@ import com.trongphu.ticketmovie.model.User;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ *
+ * @author Trong Phu
+ */
 public interface IUserService {
     List<UserDTO> findAllUser();
     Optional<User> findById(Long id);

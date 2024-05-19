@@ -4,7 +4,10 @@ package com.trongphu.ticketmovie.model;
 //import lombok.AllArgsConstructor;
 //import lombok.Data;
 //import lombok.NoArgsConstructor;
-
+/**
+ *
+ * @author Trong Phu
+ */
 //@Data
 //@AllArgsConstructor
 //@NoArgsConstructor

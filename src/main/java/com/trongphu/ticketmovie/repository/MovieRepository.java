@@ -6,7 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-
+/**
+ *
+ * @author Trong Phu
+ */
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     boolean existsByTitle(String title);
 

@@ -6,7 +6,10 @@
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.security.core.userdetails.User;
 //import org.springframework.security.core.userdetails.UserDetailsService;
-//
+///**
+// *
+// * @author Trong Phu
+// */
 //@Configuration
 //@RequiredArgsConstructor
 //public class ConfigSecurity {
