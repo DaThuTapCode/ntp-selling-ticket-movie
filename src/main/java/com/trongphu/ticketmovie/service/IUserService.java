@@ -14,7 +14,7 @@ public interface IUserService {
     List<UserDTO> findAllUser();
     Optional<User> findById(Long id);
 
-    User createUser(UserDTO userDTO) throws DataNotFoundException;
+    User createUser(UserDTO userDTO) throws DataNotFoundException, Exception;
 
-    String login(String userName, String password);
+    String login(String userName, String password) throws DataNotFoundException;
 }

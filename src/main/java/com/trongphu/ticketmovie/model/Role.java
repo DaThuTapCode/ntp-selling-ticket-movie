@@ -25,6 +25,9 @@ public class Role {
     @JsonFormat(pattern = "MM/dd/yyyy")
     private Date createat;
 
+    public  static final String ADMIN = "ADMIN";
+    public  static final String USER = "USER";
+
 //    @OneToMany(mappedBy = "role")
 //    private List<UserRole> userroles;
 }

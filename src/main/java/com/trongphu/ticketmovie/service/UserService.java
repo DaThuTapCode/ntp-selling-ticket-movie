@@ -1,7 +1,10 @@
 package com.trongphu.ticketmovie.service;
 
+import com.trongphu.ticketmovie.component.JwtTokenUtil;
 import com.trongphu.ticketmovie.dto.request.UserDTO;
 import com.trongphu.ticketmovie.exception.DataNotFoundException;
+import com.trongphu.ticketmovie.exception.ExistsDataException;
+import com.trongphu.ticketmovie.exception.PermissionDenyException;
 import com.trongphu.ticketmovie.model.Role;
 import com.trongphu.ticketmovie.model.User;
 import com.trongphu.ticketmovie.repository.RoleRepository;
@@ -9,24 +12,29 @@ import com.trongphu.ticketmovie.repository.UserRepository;
 import com.trongphu.ticketmovie.util.StatusUserEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 /**
- *
  * @author Trong Phu
  */
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService{
+public class UserService implements IUserService {
 
     //@Autowired
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
-
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public List<UserDTO> findAllUser() {
@@ -43,13 +51,27 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User createUser(UserDTO userDTO) throws DataNotFoundException {
-        //Kiem  tra userName da ton tai hay chua
+    public User createUser(UserDTO userDTO) throws Exception {
         String userName = userDTO.getUsername();
-        if(userRepository.existsByUsername(userName)){
-            throw new DataIntegrityViolationException("User name already exists!");
+        String email = userDTO.getEmail();
+
+        if (userRepository.existsByUsername(userName)) {
+            throw new ExistsDataException("User name already exists!");
         }
-        // chuyen doi UserDTO sang User
+
+        if(userRepository.existsByEmail(email)){
+            throw new ExistsDataException("Email already exists!");
+        }
+
+        if (!userDTO.getPassword().equals(userDTO.getRetypepassword())) {
+            throw  new ExistsDataException("Password dose is not match!");
+        }
+
+        Role role = roleRepository.findById(userDTO.getRole())
+                .orElseThrow(() -> new DataNotFoundException("Role not found!"));
+        if(role.getName().equals(Role.ADMIN)){
+            throw new PermissionDenyException("You can not register account ADMIN!");
+        }
         User newUser = User.builder()
                 .fullname(userDTO.getFullname())
                 .username(userDTO.getUsername())
@@ -58,26 +80,40 @@ public class UserService implements IUserService{
                 .status(StatusUserEnum.ACTIVE)
                 .facebookacountid(userDTO.getFacebookacountid())
                 .googleacountid(userDTO.getGoogleacountid())
+                .createdat(new Date())
+                .updateat(new Date())
                 .build();
-        Role role = roleRepository.findById(userDTO.getRole())
-                .orElseThrow(() -> new DataNotFoundException("Role not found"));
         newUser.setRole(role);
 
         //Kiem tra neu co account id, khong yeu cau password
         if (userDTO.getFacebookacountid() == 0 && userDTO.getGoogleacountid() == 0) {
             String password = userDTO.getPassword();
-            //String endcodedPassword = passwordEncoder.encode(password);
-
-            //newUser.setPassword(endcodedPassword);
+            String endcodedPassword = passwordEncoder.encode(password);
+            newUser.setPassword(endcodedPassword);
         }
 
-        return  userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     @Override
-    public String login(String userName, String password) {
-        //Lieen quan nhieu den security, se lam trong phan security
-        return null;
+    public String login(String userName, String password) throws DataNotFoundException {
+        Optional<User> optionalUser = userRepository.findByUsername(userName);
+        if (optionalUser.isEmpty()) {
+            throw new DataNotFoundException("Invalid User name or password!");
+        }
+        if (optionalUser.get().getFacebookacountid() == 0
+                && optionalUser.get().getGoogleacountid() == 0) {
+            if (!passwordEncoder.matches(password, optionalUser.get().getPassword())){
+                throw  new DataNotFoundException("Invalid User name or password!!");
+            }
+        }
+
+        //authenticate with java Spring security
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userName, password, optionalUser.get().getAuthorities()
+        );
+        authenticationManager.authenticate(authenticationToken);
+        return jwtTokenUtil.gennerateToke(optionalUser.get());
     }
 
 
@@ -91,21 +127,8 @@ public class UserService implements IUserService{
         userDTO.setStatus(user.getStatus());
         userDTO.setRole(user.getRole().getId());
         userDTO.setFullname(user.getFullname());
-        // Chuyển đổi các UserRole sang UserRoleDTO
-//        List<UserRoleDTO> userRoleDTOs = user.getUseroles().stream()
-//                .map(this::convertUserRoleToDTO)
-//                .collect(Collectors.toList());
-//        userDTO.setUseroles(userRoleDTOs);
         return userDTO;
     }
 
-//    private UserRoleDTO convertUserRoleToDTO(UserRole userRole) {
-//        UserRoleDTO userRoleDTO = new UserRoleDTO();
-//        userRoleDTO.setId(userRole.getId());
-//        userRoleDTO.setUserid(userRole.getUser().getId());
-//        userRoleDTO.setRoleid(userRole.getRole().getId());
-//        userRoleDTO.setRolename(userRole.getRole().getName());
-//        return userRoleDTO;
-//    }
 
 }
