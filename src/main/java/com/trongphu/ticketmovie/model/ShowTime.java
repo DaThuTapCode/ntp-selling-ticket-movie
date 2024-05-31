@@ -1,12 +1,14 @@
 package com.trongphu.ticketmovie.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Date;
 /**
  *
@@ -30,7 +32,8 @@ public class ShowTime {
     @JoinColumn(name = "screenid")
     private Screen screen;
 
-    private Date showdate;
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    private LocalDate showdate;
 
     private Time showtime;
 

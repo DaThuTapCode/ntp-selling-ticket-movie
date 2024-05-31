@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -80,8 +81,8 @@ public class UserService implements IUserService {
                 .status(StatusUserEnum.ACTIVE)
                 .facebookacountid(userDTO.getFacebookacountid())
                 .googleacountid(userDTO.getGoogleacountid())
-                .createdat(new Date())
-                .updateat(new Date())
+                .createdat(LocalDate.now())
+                .updateat(LocalDate.now())
                 .build();
         newUser.setRole(role);
 

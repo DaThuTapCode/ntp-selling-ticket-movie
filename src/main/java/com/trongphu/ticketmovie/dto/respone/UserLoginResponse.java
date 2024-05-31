@@ -1,5 +1,7 @@
 package com.trongphu.ticketmovie.dto.respone;
 
+import com.trongphu.ticketmovie.dto.request.UserDTO;
+import com.trongphu.ticketmovie.dto.request.UserLoginDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +20,7 @@ public class UserLoginResponse {
     private String message;
 
     private String token;
+
+    private UserDTO userDTO;
+
 }

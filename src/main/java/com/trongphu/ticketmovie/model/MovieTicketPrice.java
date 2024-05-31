@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
-import java.sql.Time;
+import java.time.LocalTime;
+
 /**
  *
  * @author Trong Phu
@@ -28,7 +28,7 @@ public class MovieTicketPrice {
 
     private Integer dayofweek;
 
-    private Time startime;
+    private LocalTime startime;
 
-    private Time endtime;
+    private LocalTime endtime;
 }

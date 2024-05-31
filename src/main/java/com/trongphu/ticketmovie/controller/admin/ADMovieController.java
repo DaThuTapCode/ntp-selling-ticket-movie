@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Trong Phu
@@ -78,41 +79,34 @@ public class ADMovieController {
      * POST http://localhost:8080/api/v1/admin/movies/add
      */
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createMovies(@Valid @ModelAttribute MoviesDTO moviesDTO,
-                                          //@RequestPart("file") MultipartFile file,
-                                          BindingResult result) {
-        try {
-            if (result.hasErrors()) {
-                List<String> errorMessage = result
-                        .getFieldErrors()
-                        .stream().map(FieldError::getDefaultMessage).toList();
-            }
-
-            MultipartFile file = moviesDTO.getFile();
-            System.out.println(file.getName());
-            if (file != null) {
-                //Kiem tra kich thuoc file
-                if (file.getSize() > 10 * 1024 * 1024) { //Kich thuoc lon hon 10mb
-                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                            .body("File is to large! Maximum size is 10mb");
-                }
-                //Kiem tra dinh dang file
-                String contentType = file.getContentType();
-                if (contentType == null || !contentType.startsWith("image/")) {
-                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                            .body("File must be an image!");
-                }
-                // Luu file va cap nhat image trong moviesDTO
-                String filename = storeFile(file);
-                moviesDTO.setImage(filename);
-                // thay the ham nay voi code de luu file
-                //Luu vao doi tuong movies trong DB => Se lam sau
-                movieService.crateMovie(moviesDTO);
-            }
-            return ResponseEntity.ok("Movies created successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<ResponseData> createMovies(@Valid @ModelAttribute MoviesDTO moviesDTO, BindingResult result) throws Exception {
+        if (result.hasErrors()) {
+            List<String> errorMessages = result.getFieldErrors()
+                    .stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(new ResponseData(HttpStatus.BAD_REQUEST.value(), String.join(", ", errorMessages)), HttpStatus.BAD_REQUEST);
         }
+
+        MultipartFile file = moviesDTO.getFile();
+        if (file != null && !file.isEmpty()) {
+            // Kiểm tra kích thước file
+            if (file.getSize() > 10 * 1024 * 1024) { // Kích thước lớn hơn 10MB
+                return new ResponseEntity<>(new ResponseData(HttpStatus.PAYLOAD_TOO_LARGE.value(), "File is too large! Maximum size is 10MB"), HttpStatus.PAYLOAD_TOO_LARGE);
+            }
+            // Kiểm tra định dạng file
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return new ResponseEntity<>(new ResponseData(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "File must be an image!"), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
+            // Lưu file và cập nhật image trong moviesDTO
+            String filename = storeFile(file);
+            moviesDTO.setImage(filename);
+            // Lưu vào đối tượng movies trong DB
+            movieService.crateMovie(moviesDTO);
+        }
+
+        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Movies created successfully"), HttpStatus.OK);
     }
 
 

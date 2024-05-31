@@ -10,6 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +29,7 @@ public class MovieService implements IMovieService {
 
     @Override
     public Movie crateMovie(MoviesDTO moviesDTO) {
+
         Movie newMovie = Movie.builder()
                 .title(moviesDTO.getTitle())
                 .descriptions(moviesDTO.getDescriptions())
@@ -38,7 +43,6 @@ public class MovieService implements IMovieService {
                 .image(moviesDTO.getImage())
                 .status(moviesDTO.getStatus())
                 .build();
-
         return movieRepository.save(newMovie);
     }
 
@@ -56,7 +60,7 @@ public class MovieService implements IMovieService {
     @Override
     public Movie updateMovie(Long id, MoviesDTO moviesDTO) throws DataNotFoundException {
         Movie existsingMovie = findMovieById(id);
-        if(existsingMovie != null){
+        if (existsingMovie != null) {
             existsingMovie.setTitle(moviesDTO.getTitle());
             existsingMovie.setDescriptions(moviesDTO.getDescriptions());
             existsingMovie.setDirector(moviesDTO.getDirector());
@@ -101,8 +105,8 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public List<MovieResponse> getAllMoviesByStatus1() {
-        return movieRepository.findByStatus(1).stream().map(MovieResponse::convertToMovie).toList();
+    public List<MovieResponse> getAllMoviesIsShowing(LocalDate currentdate, LocalTime currenttime, Integer status) {
+        return movieRepository.getMovieIsShowing(currentdate, currenttime, status).stream().map(MovieResponse::convertToMovie).toList();
     }
 
     @Override
@@ -111,14 +115,14 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public List<MovieResponse> getAllMoviesByStatus3() {
-        return movieRepository.findByStatus(3).stream().map(MovieResponse::convertToMovie).toList();
+    public List<MovieResponse> getAllMovieUpcoming(LocalDate currentdate, Integer status) {
+        return movieRepository.getMovieUpComing(currentdate, status).stream().map(MovieResponse::convertToMovie).toList();
     }
 
     @Override
     public MovieResponse getDetailMovieByIdAndStatus(Long id, Integer status) {
         Movie movieDetail = movieRepository.findByIdAndStatus(id, status);
-        if(movieDetail != null){
+        if (movieDetail != null) {
             return MovieResponse.convertToMovie(movieRepository.findByIdAndStatus(id, status));
         }
         return null;
@@ -127,7 +131,6 @@ public class MovieService implements IMovieService {
 
 
     //Dữ liệu trả về cho client
-
 
 
 }

@@ -22,8 +22,12 @@ public class Seat {
     @JoinColumn(name = "screenid")
     private Screen screen;
 
-    private String SeatNumber;
+    private String seatrow;
 
-    @Enumerated(EnumType.STRING)
-    private TypeSeatEnum type;
+    private String seatnumber;
+
+    //@Enumerated(EnumType.STRING)
+    private String type;
+
+    private String status;
 }

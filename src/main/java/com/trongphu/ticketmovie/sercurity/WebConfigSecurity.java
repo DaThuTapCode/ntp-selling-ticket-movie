@@ -36,15 +36,25 @@ public class WebConfigSecurity {
                     request
                             .requestMatchers(
                                     String.format("%s/users/register", apiPrefix)
-                                    ,String.format("%s/users/login", apiPrefix)
-                                    ,String.format("%s/movies/**", apiPrefix)
-                                    ,String.format("%s/images/**",apiPrefix)
-//                                    ,String.format("%s/users/hihi",apiPrefix)
+                                    , String.format("%s/users/login", apiPrefix)
+                                    , String.format("%s/movies/**", apiPrefix)
+                                    , String.format("%s/images/**", apiPrefix)
+                                    , String.format("%s/theaters/**", apiPrefix)
+//                                    , String.format("%s/theaters/", apiPrefix)
                             )
                             .permitAll()
                             .requestMatchers(HttpMethod.GET,
-                                    String.format("%s/users/hihi", apiPrefix)).hasAnyRole(Role.ADMIN, Role.USER)
-                            .anyRequest().authenticated();
+                                    String.format("%s/users/hihi", apiPrefix)
+                                    ,String.format("%s/seat/**", apiPrefix)
+                                    ,String.format("%s/showtime/**", apiPrefix)
+                            ).hasAnyRole(Role.ADMIN, Role.USER)
+                            .requestMatchers(HttpMethod.POST
+                                    , String.format("%s/theaters/add", apiPrefix)
+                                    , String.format("%s/admin/movies/add", apiPrefix)
+                            ).hasAnyRole(Role.ADMIN)
+                            .anyRequest()
+                            .authenticated();
+
 
                 });
         return http.build();

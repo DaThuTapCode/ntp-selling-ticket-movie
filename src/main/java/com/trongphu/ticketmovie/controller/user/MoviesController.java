@@ -27,6 +27,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,11 +46,9 @@ public class MoviesController {
 
     private final MovieService movieService;
 
-    //Trả về ảnh theo tên ảnh được truyền vào
-    // GET http://localhost:8080/{{$placeholder}}/movies/images/{{imageName}}
-
     /**
      * API trả về ảnh theo tên ảnh
+     * GET http://localhost:8080/api/v1/movies/images/{{imageName}}
      */
     @GetMapping("images/{imageName}")
     public ResponseEntity<?> viewImage(@PathVariable String imageName) {
@@ -84,24 +88,26 @@ public class MoviesController {
 
     /**
      * API Lấy ra toàn bộ bản ghi của movies có trạng thái đang chiếu (1)
+     * GET http://localhost:8080/api/v1/movies/movie-is-showing
      */
-    @GetMapping("/status1")
-    public ResponseData getMoviesStatus1() {
-        return new ResponseData(HttpStatus.OK.value(), "Movie status 1, Phim Đang Chiếu", movieService.getAllMoviesByStatus1());
+    @GetMapping("/movie-is-showing")
+    public ResponseData getMoviesIsShowing() {
+        return new ResponseData(HttpStatus.OK.value(), "Phim Đang Chiếu", movieService.getAllMoviesIsShowing(LocalDate.now(), LocalTime.now(), 1));
     }
 
 
-
     /**
-     * API Lấy ra toàn bộ bản ghi của movies có trạng thái sắp chiếu (3)
+     * API Lấy ra toàn bộ bản ghi của movies có trạng thái sắp chiếu
+     * GET http://localhost:8080/api/v1/movies/movie-upcoming
      */
-    @GetMapping("/status3")
+    @GetMapping("/movie-upcoming")
     public ResponseData getMoviesStatus3() {
-        return new ResponseData(HttpStatus.OK.value(), "Movie status 3, Phim Sắp Chiếu", movieService.getAllMoviesByStatus3());
+        return new ResponseData(HttpStatus.OK.value(), "Phim Sắp Chiếu", movieService.getAllMovieUpcoming(LocalDate.now(), 3));
     }
 
     /**
      * API Lấy ra 1 bản ghi cho đối tượng có status là 1 và 3 theo id
+     * GET http://localhost:8080/api/v1/movies/detail-movie/{{id}}/{{status}}
      */
     @GetMapping("/detail-movie/{id}/{status}")
     public ResponseData getDetailMovie(@PathVariable("id") Long id, @PathVariable("status") Integer status) {

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 /**
  *
@@ -33,7 +34,7 @@ public class Event {
 
     private String image;
 
-    private Date eventdate;
+    private LocalDate eventdate;
 
     private String location;
 

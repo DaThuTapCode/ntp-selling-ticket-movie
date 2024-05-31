@@ -3,6 +3,7 @@ package com.trongphu.ticketmovie.dto.request;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 /**
  *
@@ -18,5 +19,5 @@ public class RolesDTO {
 
     private String description;
 
-    private Date createat;
+    private LocalDate createat;
 }

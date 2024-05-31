@@ -1,11 +1,12 @@
 package com.trongphu.ticketmovie.model;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 /**
  *
  * @author Trong Phu
@@ -33,7 +34,7 @@ public class Promotion {
 
     private String description;
 
-    private Date startdate;
+    private LocalDate startdate;
 
-    private Date enddate;
+    private LocalDate enddate;
 }

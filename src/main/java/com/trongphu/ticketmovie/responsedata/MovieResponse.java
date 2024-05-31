@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 /**
  *
@@ -25,7 +26,7 @@ public class MovieResponse {
 
     private int duration;
 
-    private Date releasedate ;
+    private LocalDate releasedate ;
 
     private String genre;
 

@@ -1,15 +1,16 @@
 package com.trongphu.ticketmovie.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+
 /**
  *
  * @author Trong Phu
@@ -30,7 +31,7 @@ public class Movie {
 
     private int duration;
 
-    private Date releasedate;
+    private LocalDate releasedate;
 
     private String genre;
 
@@ -45,4 +46,8 @@ public class Movie {
     private String image;
 
     private int status;
+
+    @OneToMany(mappedBy = "movie")
+    @JsonIgnore
+    private List<ShowTime> showtimes;
 }

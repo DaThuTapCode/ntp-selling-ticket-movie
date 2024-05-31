@@ -79,9 +79,9 @@ public class UserController {
                 "Login successfully!",
                 UserLoginResponse.
                         builder().
-                        message("Login successfully!").
-                        token(token).
-                        build());
-
+                        message("Login successfully!")
+                        .token(token)
+                        .userDTO(new UserDTO(userLoginDTO.getUsername()))
+                        .build());
     }
 }

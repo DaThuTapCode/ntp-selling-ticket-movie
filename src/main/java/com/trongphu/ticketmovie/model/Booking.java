@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 /**
  *
@@ -25,7 +26,7 @@ public class Booking {
     @JoinColumn(name = "userid")
     private User user;
 
-    private Date bookingdate;
+    private LocalDate bookingdate;
 
     private BigDecimal totalPrice;
 

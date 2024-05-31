@@ -7,6 +7,9 @@ import com.trongphu.ticketmovie.responsedata.MovieResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 /**
  *
@@ -42,7 +45,7 @@ public interface IMovieService {
     /**
      * Trả về toàn bộ bản ghi của movie trạng thái 1
      * */
-    List<MovieResponse> getAllMoviesByStatus1();
+    List<MovieResponse> getAllMoviesIsShowing(LocalDate currentdate, LocalTime currenttime, Integer status);
 
     /**
      * Trả về toàn bộ bản ghi của movie trạng thái 2
@@ -50,12 +53,14 @@ public interface IMovieService {
     List<MovieResponse> getAllMoviesByStatus2();
 
     /**
-     * Trả về toàn bộ bản ghi của movie trạng thái 3
+     * Trả về danh sách của movie sắp chiếu
      * */
-    List<MovieResponse> getAllMoviesByStatus3();
+    List<MovieResponse> getAllMovieUpcoming(LocalDate currentdate, Integer status);
 
     /**
      * Trả về 1 đối tượng movie theo id và status
      * */
     MovieResponse getDetailMovieByIdAndStatus(Long id, Integer status);
+
+
 }

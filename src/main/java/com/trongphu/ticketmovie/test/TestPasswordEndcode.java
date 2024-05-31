@@ -4,6 +4,8 @@ import com.trongphu.ticketmovie.exception.DataNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.TimeZone;
+
 /**
  * Created by Trong Phu on 5/20/2024
  *
@@ -14,6 +16,9 @@ public class TestPasswordEndcode {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
        // if (!passwordEncoder.matches("130904","130904")){
             System.out.println(passwordEncoder.matches("130904","$2a$10$l6aZ9d2htc5zCXq8ay99ruWQTZv9IRRXbOeXXY8d6hMbWE5mumJKm"));
+        TimeZone defaultTimeZone = TimeZone.getDefault();
+        System.out.println("Default Time Zone: " + defaultTimeZone.getID());
+
         //}
     }
 }

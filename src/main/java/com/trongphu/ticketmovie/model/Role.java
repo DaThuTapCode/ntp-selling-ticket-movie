@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+
 /**
  *
  * @author Trong Phu
@@ -23,7 +23,7 @@ public class Role {
     private String description;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "MM/dd/yyyy")
-    private Date createat;
+    private LocalDate createat;
 
     public  static final String ADMIN = "ADMIN";
     public  static final String USER = "USER";

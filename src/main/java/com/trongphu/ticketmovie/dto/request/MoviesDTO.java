@@ -4,8 +4,10 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Date;
 /**
  *
@@ -29,7 +31,9 @@ public class MoviesDTO {
 
     @NotNull(message = "Release date must be not null!")
     @Future(message = "Release date must be a future date!")
-    private Date releasedate ;
+   // @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate releasedate ;
 
     @NotNull(message = "Genre must be not null!")
     @Size(min = 1, max = 100, message = "Genre must be between 1 and 100 characters!")

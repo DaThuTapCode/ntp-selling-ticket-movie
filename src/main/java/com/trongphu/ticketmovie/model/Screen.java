@@ -1,10 +1,14 @@
 package com.trongphu.ticketmovie.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trongphu.ticketmovie.util.TypeScreenEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 /**
  *
  * @author Trong Phu
@@ -24,9 +28,11 @@ public class Screen {
 
     private String name;
 
-    private Integer capacity;
+   // @Enumerated(EnumType.STRING)
+    private String type;
 
-    @Enumerated(EnumType.STRING)
-    private TypeScreenEnum type;
+    @OneToMany(mappedBy = "screen")
+    @JsonIgnore
+    private List<ShowTime> showTimes;
 
 }
