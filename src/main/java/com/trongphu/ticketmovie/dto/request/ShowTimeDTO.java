@@ -1,0 +1,48 @@
+package com.trongphu.ticketmovie.dto.request;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.trongphu.ticketmovie.model.Movie;
+import com.trongphu.ticketmovie.model.Screen;
+import com.trongphu.ticketmovie.model.ShowTime;
+import lombok.Builder;
+import lombok.Data;
+
+import java.sql.Time;
+import java.time.LocalDate;
+
+/**
+ * Created by Trong Phu on 6/2/2024 03:00:12
+ *
+ * @author Trong Phu
+ */
+@Data
+@Builder
+public class ShowTimeDTO {
+
+    private Long id;
+
+
+    private String moviename;
+
+
+    private String screenname;
+
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    private LocalDate showdate;
+
+    private Time showtime;
+
+    public static ShowTimeDTO convertToShowTimeDTO(ShowTime showTime){
+        ShowTimeDTO showTimeDTO = ShowTimeDTO
+                .builder()
+                .id(showTime.getId())
+                .moviename(showTime.getMovie().getTitle())
+                .screenname(showTime.getScreen().getName())
+                .showdate(showTime.getShowdate())
+                .showtime(showTime.getShowtime())
+                .build();
+        return showTimeDTO;
+    }
+
+
+}

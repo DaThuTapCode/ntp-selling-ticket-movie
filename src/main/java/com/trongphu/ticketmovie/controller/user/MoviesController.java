@@ -122,5 +122,13 @@ public class MoviesController {
         return new ResponseError(HttpStatus.NO_CONTENT.value(), "Không có đối tượng nào được tìm thấy với id =" + id + " và status = " + status);
     }
 
+    /**
+     * API lấy ra phim bán vé trước
+     * */
+    @GetMapping("/movie-sell-ticket-in-advance")
+    public  ResponseData getMovieSellTicketInAdvance(){
+        return new ResponseData(HttpStatus.OK.value(), "Danh sach phim ban ve truoc",movieService.getMovieSellTicketInAdvance(LocalDate.now()));
+    }
+
 
 }

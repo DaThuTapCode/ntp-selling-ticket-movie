@@ -44,11 +44,20 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      * - Co suat chieu
      *
      * */
-    @Query("select  mvs from  movies mvs  join mvs.showtimes st where  mvs.releasedate < :currentdate and mvs.status = :status and st.showdate >= :currentdate and st.showtime >= :currenttime")
+    @Query("select  mvs from  movies mvs  join mvs.showtimes st where  mvs.releasedate <= :currentdate and mvs.status = :status and st.showdate >= :currentdate and st.showtime >= :currenttime")
     List<Movie> getMovieIsShowing(
             @Param("currentdate") LocalDate currentdate
             , @Param("currenttime")LocalTime localTime
             , @Param("status") Integer status
+    );
+
+
+    /**
+     * Lay ra phim ban ve truoc
+     * */
+    @Query("select mvs from movies  mvs  join mvs.showtimes st where mvs.releasedate > :currentdate")
+    List<Movie> getMovieSellTicketInAdvance(
+            @Param("currentdate") LocalDate currentdate
     );
 
 

@@ -1,6 +1,8 @@
 package com.trongphu.ticketmovie.dto.request;
 
+import com.trongphu.ticketmovie.model.Theater;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,9 +12,13 @@ import lombok.NoArgsConstructor;
  * @author Trong Phu
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TheaterDTO {
+
+    private Long id;
+
     private String name;
 
     private String location;
@@ -25,4 +31,17 @@ public class TheaterDTO {
 
     private String description;
 
+    public static TheaterDTO convertToTheaterDTO(Theater theater){
+        TheaterDTO theaterDTO = TheaterDTO
+                .builder()
+                .id(theater.getId())
+                .name(theater.getName())
+                .location(theater.getLocation())
+                .image(theater.getImage())
+                .phone(theater.getPhone())
+                .email(theater.getEmail())
+                .description(theater.getDescription())
+                .build();
+        return theaterDTO;
+    }
 }

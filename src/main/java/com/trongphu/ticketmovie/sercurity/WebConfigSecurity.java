@@ -40,6 +40,8 @@ public class WebConfigSecurity {
                                     , String.format("%s/movies/**", apiPrefix)
                                     , String.format("%s/images/**", apiPrefix)
                                     , String.format("%s/theaters/**", apiPrefix)
+                                    , String.format("%s/payment/create-payment", apiPrefix)
+                                    , "/vnpay_jsp/**"
 //                                    , String.format("%s/theaters/", apiPrefix)
                             )
                             .permitAll()
@@ -47,6 +49,7 @@ public class WebConfigSecurity {
                                     String.format("%s/users/hihi", apiPrefix)
                                     ,String.format("%s/seat/**", apiPrefix)
                                     ,String.format("%s/showtime/**", apiPrefix)
+                                    ,String.format("%s/booking/**", apiPrefix)
                             ).hasAnyRole(Role.ADMIN, Role.USER)
                             .requestMatchers(HttpMethod.POST
                                     , String.format("%s/theaters/add", apiPrefix)

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -25,6 +25,11 @@ public class ShowTimeService implements IShowTimeService{
     @Override
     public List<ShowTimeResponse> getAll() {
         return showTimeRepository.findAll().stream().map(ShowTimeResponse::convertToShowTimeDTO).toList();
+    }
+
+    @Override
+    public Optional<ShowTime> getById(Long id) {
+        return showTimeRepository.findById(id);
     }
 
     @Override

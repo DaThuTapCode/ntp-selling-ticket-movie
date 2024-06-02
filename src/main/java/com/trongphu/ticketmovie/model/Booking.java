@@ -1,5 +1,6 @@
 package com.trongphu.ticketmovie.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trongphu.ticketmovie.util.StatusBooking;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,8 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+
 /**
  *
  * @author Trong Phu
@@ -26,11 +31,14 @@ public class Booking {
     @JoinColumn(name = "userid")
     private User user;
 
-    private LocalDate bookingdate;
+    private Timestamp bookingdate;
 
     private BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
     private StatusBooking status;
 
+    @OneToMany(mappedBy = "booking", fetch = FetchType.EAGER)
+//    @JsonIgnore
+    private List<BookingDetail> bookingDetail;
 }

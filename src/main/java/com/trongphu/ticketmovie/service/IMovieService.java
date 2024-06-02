@@ -62,5 +62,5 @@ public interface IMovieService {
      * */
     MovieResponse getDetailMovieByIdAndStatus(Long id, Integer status);
 
-
+    List<MovieResponse> getMovieSellTicketInAdvance(LocalDate currentdate);
 }

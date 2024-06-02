@@ -7,12 +7,15 @@ import com.trongphu.ticketmovie.responsedata.ShowTimeResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Trong Phu
  */
 public interface IShowTimeService {
     List<ShowTimeResponse> getAll();
+
+    Optional<ShowTime> getById(Long id);
 
     List<ShowTimeResponse> getByMovieId(Long movieId);
 

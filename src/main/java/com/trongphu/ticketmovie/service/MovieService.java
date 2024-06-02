@@ -129,6 +129,11 @@ public class MovieService implements IMovieService {
 
     }
 
+    @Override
+    public List<MovieResponse> getMovieSellTicketInAdvance(LocalDate currentdate) {
+        return movieRepository.getMovieSellTicketInAdvance(currentdate).stream().map(MovieResponse::convertToMovie).toList();
+    }
+
 
     //Dữ liệu trả về cho client
 

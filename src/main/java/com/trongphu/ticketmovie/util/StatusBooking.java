@@ -5,5 +5,5 @@ package com.trongphu.ticketmovie.util;
  * @author Trong Phu
  */
 public enum StatusBooking {
-    HeHe, HiHi
+    PENDING, CONFIRMED, CANCELED
 }

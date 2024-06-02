@@ -33,13 +33,12 @@ public class ShowTimesController {
         return new ResponseData(HttpStatus.OK.value(), "Get all show time", showTimeService.getAll());
     }
 
-//    @GetMapping("/movieid/{movieId}")
-//    public ResponseData getByMovieId(
-//            @PathVariable("movieId") Long movieId
-//    ) {
-//        List<ShowTimeResponse> list = showTimeService.getByMovieId(movieId);
-//        return new ResponseData(HttpStatus.OK.value(), "Get show time by Movie id", list);
-//    }
+    @GetMapping("/{id}")
+    public ResponseData getById(
+            @PathVariable Long id
+    ){
+        return new ResponseData(HttpStatus.OK.value(), "Lấy showtime theo id", showTimeService.getById(id));
+    }
 
     @GetMapping("/screenid/{screenId}")
     public ResponseData getByScreenId(
