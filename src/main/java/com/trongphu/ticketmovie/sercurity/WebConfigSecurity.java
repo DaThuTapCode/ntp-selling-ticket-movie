@@ -41,7 +41,8 @@ public class WebConfigSecurity {
                                     , String.format("%s/images/**", apiPrefix)
                                     , String.format("%s/theaters/**", apiPrefix)
                                     , String.format("%s/payment/create-payment", apiPrefix)
-                                    , "/vnpay_jsp/**"
+                                    , String.format("%s/payment/payment-callback**", apiPrefix)
+                                    , "/sendEmail"
 //                                    , String.format("%s/theaters/", apiPrefix)
                             )
                             .permitAll()
@@ -57,8 +58,6 @@ public class WebConfigSecurity {
                             ).hasAnyRole(Role.ADMIN)
                             .anyRequest()
                             .authenticated();
-
-
                 });
         return http.build();
     }

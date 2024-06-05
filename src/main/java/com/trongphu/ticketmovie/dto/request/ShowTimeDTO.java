@@ -27,7 +27,7 @@ public class ShowTimeDTO {
 
     private String screenname;
 
-    @JsonFormat(pattern = "yyyy/MM/dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate showdate;
 
     private Time showtime;
@@ -36,12 +36,13 @@ public class ShowTimeDTO {
         ShowTimeDTO showTimeDTO = ShowTimeDTO
                 .builder()
                 .id(showTime.getId())
-                .moviename(showTime.getMovie().getTitle())
-                .screenname(showTime.getScreen().getName())
-                .showdate(showTime.getShowdate())
+                .moviename(showTime.getMovie() != null ? showTime.getMovie().getTitle() : null)
+                .screenname(showTime.getScreen() != null ? showTime.getScreen().getName() : null)
+                .showdate(showTime.getShowdate() != null ? showTime.getShowdate() : null)
                 .showtime(showTime.getShowtime())
                 .build();
         return showTimeDTO;
+
     }
 
 

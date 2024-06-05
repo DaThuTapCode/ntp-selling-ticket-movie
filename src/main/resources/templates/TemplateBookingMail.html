@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Xác nhận thanh toán</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #333;
+        }
+        .details {
+            margin-bottom: 20px;
+        }
+        .details h2 {
+            color: #333;
+        }
+        .details p {
+            margin: 5px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+        .text-green{
+            color: #72BE42;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 class="text-green">NTP Ticket Box</h1>
+        <h2>Thanh toán thành công!</h2>
+    </div>
+    <div class="details">
+        <h2>Chi tiết đặt vé</h2>
+        <p><strong>Mã đơn hàng:</strong> <span th:text="${booking.id}"></span></p>
+        <p><strong>Người dùng:</strong> <span th:text="${booking.user.username}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${booking.user.email}"></span></p>
+        <p><strong>Ngày đặt:</strong> <span th:text="${booking.bookingdate}"></span></p>
+        <p><strong>Tổng giá:</strong> <span th:text="${booking.totalPrice}"></span></p>
+        <p><strong>Trạng thái:</strong> <span th:text="${booking.status}"></span></p>
+    </div>
+    <div class="details">
+        <h2>Chi tiết vé</h2>
+        <div th:each="detail : ${booking.bookingDetail}">
+            <p><strong>Phim:</strong> <span th:text="${detail.showtime.movie.title}"></span></p>
+            <p><strong>Rạp:</strong> <span th:text="${detail.theater.name}"></span></p>
+            <p><strong>Địa chỉ:</strong> <span th:text="${detail.theater.location}"></span></p>
+            <p><strong>Ngày chiếu:</strong> <span th:text="${detail.showtime.showdate}"></span></p>
+            <p><strong>Giờ chiếu:</strong> <span th:text="${detail.showtime.showtime}"></span></p>
+            <p><strong>Ghế:</strong> <span th:text="${detail.seat.seatrow} ${detail.seat.seatnumber}"></span></p>
+            <p><strong>Loại ghế:</strong> <span th:text="${detail.seat.type}"></span></p>
+            <p><strong>Giá vé:</strong> <span th:text="${detail.price}"></span></p>
+            <hr/>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Xin cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+        <ul>
+            <li style="color: red">*Vé đã mua không thể hoàn trả!</li>
+        </ul>
+        <p>Mọi thắc mắc xin liên hệ: <a href="mailto:ntpcineHNMD@gmail.com">ntpcineHNMD@gmail.com</a> | Điện thoại: 19002080</p>
+    </div>
+</div>
+</body>
+</html>

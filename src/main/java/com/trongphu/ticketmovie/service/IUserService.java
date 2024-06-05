@@ -13,8 +13,11 @@ import java.util.Optional;
 public interface IUserService {
     List<UserDTO> findAllUser();
     Optional<User> findById(Long id);
+    Optional<User> findByUsername(String username);
 
     User createUser(UserDTO userDTO) throws DataNotFoundException, Exception;
 
     String login(String userName, String password) throws DataNotFoundException;
+
+
 }

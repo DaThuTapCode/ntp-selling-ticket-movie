@@ -83,7 +83,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/theaters/all", apiPrefix), "GET"),
                 Pair.of(String.format("%s/theaters", apiPrefix), "GET"),
                 Pair.of(String.format("%s/payment/create-payment", apiPrefix), "GET"),
-                Pair.of("/vnpay_jsp/vnpay_return.jsp", "GET")
+                Pair.of(String.format("%s/payment/payment-callback", apiPrefix), "GET"),
+                Pair.of("/sendEmail", "GET")
         );
         for (Pair<String, String> bypassToken : bypasstoken) {
             if (request.getServletPath().contains(bypassToken.getLeft())

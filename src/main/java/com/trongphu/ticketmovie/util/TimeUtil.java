@@ -1,5 +1,6 @@
 package com.trongphu.ticketmovie.util;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,5 +33,14 @@ public class TimeUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static Timestamp getTimestampNow(){
+        Date date = new Date();
+
+        // Tạo đối tượng Timestamp từ ngày giờ hiện tại
+        Timestamp timestamp = new Timestamp(date.getTime());
+        // In ra Timestamp
+        return timestamp;
     }
 }

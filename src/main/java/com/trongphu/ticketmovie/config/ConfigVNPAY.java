@@ -1,4 +1,4 @@
-package com.trongphu.ticketmovie.util;
+package com.trongphu.ticketmovie.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -16,11 +16,11 @@ import java.util.*;
  */
 public class ConfigVNPAY {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "http://localhost:8080/vnpay_jsp/vnpay_return.jsp";
+//    public static String vnp_ReturnUrl = "http://localhost:8080/vnpay_jsp/vnpay_return.jsp";
+    public static String vnp_ReturnUrl = "http://localhost:8080/api/v1/payment/payment-callback";
     public static String vnp_TmnCode = "4VAC8KP2";
     public static String secretKey = "NU9LNV123USGJYOAPJ8IV80RWR2G1JGW";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
-
     public static String vnp_Version = "2.1.0";
     public static String vnp_Command = "pay";
     public static String md5(String message) {

@@ -52,6 +52,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
     public User createUser(UserDTO userDTO) throws Exception {
         String userName = userDTO.getUsername();
         String email = userDTO.getEmail();

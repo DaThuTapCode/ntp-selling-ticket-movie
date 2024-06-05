@@ -1,4 +1,4 @@
-package com.trongphu.ticketmovie.util;
+package com.trongphu.ticketmovie.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

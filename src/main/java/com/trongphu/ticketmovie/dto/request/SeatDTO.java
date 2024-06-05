@@ -27,7 +27,6 @@ public class SeatDTO {
 
     private String seatnumber;
 
-
     private String type;
 
     private String status;
@@ -36,11 +35,11 @@ public class SeatDTO {
         SeatDTO seatDTO = SeatDTO
                 .builder()
                 .id(seat.getId())
-                .screenid(seat.getScreen().getId())
-                .seatrow(seat.getSeatrow())
-                .seatnumber(seat.getSeatnumber())
-                .type(seat.getType())
-                .status(seat.getStatus())
+                .screenid(seat.getScreen() != null ? seat.getScreen().getId() : null)
+                .seatrow(seat.getSeatrow() != null ? seat.getSeatrow() : null)
+                .seatnumber(seat.getSeatnumber() != null ? seat.getSeatnumber() : null)
+                .type(seat.getType() != null ? seat.getType() : null)
+                .status(seat.getStatus() != null ? seat.getStatus() : null)
                 .build();
         return seatDTO;
     }
