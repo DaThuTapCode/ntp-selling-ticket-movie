@@ -35,11 +35,14 @@ public class Booking {
 
     private Timestamp bookingdate;
 
+    private String transactioncode;
+
     private BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
     private StatusBooking status;
 
+    private  String orderinfo;
     @OneToMany(mappedBy = "booking", fetch = FetchType.EAGER)
 //    @JsonIgnore
     private List<BookingDetail> bookingDetail;

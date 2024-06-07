@@ -35,7 +35,11 @@ public class BookingDTO {
     @Min(value = 1, message = "Tổng tiền phải là số dương!")
     private BigDecimal totalPrice;
 
+    private String transactioncode;
+
     private StatusBooking status;
+
+    private String orderinfo;
 
     private List<BookingDetailDTO> bookingdetail;
 
@@ -46,6 +50,8 @@ public class BookingDTO {
                 .bookingdate(booking.getBookingdate())
                 .totalPrice(booking.getTotalPrice())
                 .status(booking.getStatus())
+                .transactioncode(booking.getTransactioncode())
+                .orderinfo(booking.getOrderinfo())
                 .bookingdetail(booking.getBookingDetail() == null ? null :
                         booking.getBookingDetail().stream()
                                 .map(BookingDetailDTO::convertToBookingDetailDTO)

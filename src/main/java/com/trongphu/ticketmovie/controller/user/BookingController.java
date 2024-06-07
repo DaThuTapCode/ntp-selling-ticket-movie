@@ -1,10 +1,7 @@
 package com.trongphu.ticketmovie.controller.user;
 
 import com.trongphu.ticketmovie.component.JwtTokenUtil;
-import com.trongphu.ticketmovie.dto.request.BookingDTO;
-import com.trongphu.ticketmovie.dto.request.BookingDetailDTO;
-import com.trongphu.ticketmovie.dto.request.TheaterDTO;
-import com.trongphu.ticketmovie.dto.request.UserDTO;
+import com.trongphu.ticketmovie.dto.request.*;
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
 import com.trongphu.ticketmovie.dto.respone.ResponseError;
 import com.trongphu.ticketmovie.model.*;
@@ -21,8 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Trong Phu on 5/24/2024
@@ -99,9 +98,6 @@ public class BookingController {
             }
             final String token = authHeader.substring(7);
             final String username = jwtTokenUtil.extractUserName(token);
-//            if(!jwtTokenUtil.extractUserName(token).equals(username)){
-//                return new ResponseError(HttpStatus.UNAUTHORIZED.value(), "Lỗi: Bạn không có quyền xem giao dịch của người khác!");
-//            }
             List<BookingDTO> list = bookingService.findByUsername(username);
             return new ResponseData(HttpStatus.OK.value(), "Lịch sử giao dịch của khách hàng: " + username, list);
         }catch (Exception e){
@@ -110,8 +106,23 @@ public class BookingController {
         }
     }
 
+    /**
+     * API trả về các seat đã được đặt
+     */
+    @GetMapping("/showtime-seat-is-booked/{idshowtime}")
+    public ResponseData getSeatIsBookedByShowtime(@PathVariable Long idshowtime) {
+        try {
+            List<SeatDTO> seatBookedList = bookingService.getBookingByShowtime(idshowtime).stream()
+                    .flatMap(bookingDTO -> bookingDTO.getBookingdetail().stream())
+                    .map(BookingDetailDTO::getSeat)
+                    .collect(Collectors.toList());
 
-
+            return new ResponseData(HttpStatus.OK.value(), "Danh sách seat đã đặt theo showtime", seatBookedList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Lỗi: " + e.getMessage());
+        }
+    }
 
     BookingDetail convertBookingDetailDTOToBookingDetail(BookingDetailDTO bookingDetailDTO, BookingDTO bookingDTO){
         BookingDetail bookingDetail = BookingDetail
@@ -133,6 +144,8 @@ public class BookingController {
                 .user(User.builder().id(user.get().getId()).username(user.get().getUsername()).email(user.get().getEmail()).build())
                 .bookingdate(TimeUtil.getTimestampNow())
                 .totalPrice(bookingDTO.getTotalPrice())
+                .orderinfo(bookingDTO.getOrderinfo())
+                .transactioncode(bookingDTO.getTransactioncode())
                 .status(StatusBooking.PENDING)
                 .build();
         return  booking;

@@ -59,10 +59,11 @@
         <div th:each="detail : ${booking.bookingDetail}">
             <p><strong>Phim:</strong> <span th:text="${detail.showtime.movie.title}"></span></p>
             <p><strong>Rạp:</strong> <span th:text="${detail.theater.name}"></span></p>
+            <p><strong>Phòng chiếu:</strong> <span th:text="${detail.showtime.screen.name}"></span></p>
             <p><strong>Địa chỉ:</strong> <span th:text="${detail.theater.location}"></span></p>
             <p><strong>Ngày chiếu:</strong> <span th:text="${detail.showtime.showdate}"></span></p>
             <p><strong>Giờ chiếu:</strong> <span th:text="${detail.showtime.showtime}"></span></p>
-            <p><strong>Ghế:</strong> <span th:text="${detail.seat.seatrow} ${detail.seat.seatnumber}"></span></p>
+            <p><strong>Ghế:</strong> <span th:text="${detail.seat.seatrow}"></span><span th:text="${detail.seat.seatnumber}"></span></p>
             <p><strong>Loại ghế:</strong> <span th:text="${detail.seat.type}"></span></p>
             <p><strong>Giá vé:</strong> <span th:text="${detail.price}"></span></p>
             <hr/>

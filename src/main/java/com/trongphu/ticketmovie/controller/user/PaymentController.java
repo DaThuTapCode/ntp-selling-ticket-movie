@@ -144,13 +144,16 @@ private final EmailUtil emailUtil;
             , HttpServletRequest resp
     ) throws DataNotFoundException {
         String vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
+        String vnp_TransactionNo = queryParams.get("vnp_TransactionNo");
+        String vnp_OrderInfo = queryParams.get("vnp_OrderInfo");
         String id_booking = queryParams.get("id_booking");
-
         if(id_booking != null && !id_booking.isEmpty()){
             if("00".equals(vnp_ResponseCode)){
                 //Giao dịch thành công
                 Booking booking = bookingService.finById(Long.parseLong(id_booking)).orElseThrow(() -> new DataNotFoundException("Không tồn tại booking này!!"));
                 booking.setStatus(StatusBooking.CONFIRMED);
+                booking.setTransactioncode(vnp_TransactionNo);
+                booking.setOrderinfo(vnp_OrderInfo);
                 bookingService.save(booking);
                 Map<String, Object> model = new HashMap<>();
                 model.put("booking", booking);
@@ -164,6 +167,9 @@ private final EmailUtil emailUtil;
                 }
                 return new ResponseData(HttpStatus.OK.value(), "Thanh toán thành công!", BookingDTO.convertoBookingDTO(booking));
             }else {
+                Booking booking = bookingService.finById(Long.parseLong(id_booking)).orElseThrow(() -> new DataNotFoundException("Không tồn tại booking này!!"));
+                booking.setStatus(StatusBooking.CANCELED);
+                bookingService.save(booking);
                 //Giao dịch thất bại
                 return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Thanh toán thất bại");
             }

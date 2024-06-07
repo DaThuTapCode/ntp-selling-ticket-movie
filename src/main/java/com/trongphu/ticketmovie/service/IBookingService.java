@@ -27,6 +27,15 @@ public interface IBookingService {
      * */
     BookingDTO save(Booking booking);
 
+
+    /**
+     * Lấy ra danh sách booking theo showtime
+     * */
+    List<BookingDTO> getBookingByShowtime(Long idshowtime);
+
+
+
+//    List<Booking> findByStatus(String status);
     Optional<Booking> finById(Long id);
 
 }

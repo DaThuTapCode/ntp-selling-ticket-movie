@@ -22,6 +22,8 @@ public class e {
 
             // In địa chỉ IP ra màn hình
             System.out.println("IP Address of " + domain + ": " + ipAddress);
+
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
