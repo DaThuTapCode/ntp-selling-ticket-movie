@@ -18,6 +18,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Trong Phu
@@ -74,6 +75,7 @@ public class UserController {
          * */
         String token = userService.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
         System.out.println(jwtTokenUtil.extractUserName(token));
+        Optional<User> user = userService.findByUsername(jwtTokenUtil.extractUserName(token));
         return new ResponseData(
                 HttpStatus.ACCEPTED.value(),
                 "Login successfully!",
@@ -81,7 +83,7 @@ public class UserController {
                         builder().
                         message("Login successfully!")
                         .token(token)
-                        .userDTO(new UserDTO(userLoginDTO.getUsername()))
+                        .userDTO(UserDTO.builder().username(user.get().getUsername()).status(user.get().getStatus()).role(user.get().getRole().getId()).email(user.get().getEmail()).build())
                         .build());
     }
 }

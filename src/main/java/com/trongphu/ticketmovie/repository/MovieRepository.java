@@ -16,6 +16,8 @@ import java.util.List;
  * @author Trong Phu
  */
 public interface MovieRepository extends JpaRepository<Movie, Long> {
+
+
     boolean existsByTitle(String title);
 
     Page<Movie> findAll(Pageable pageable); // phan trang

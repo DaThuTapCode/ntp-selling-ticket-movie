@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 /**
@@ -36,7 +37,7 @@ public class ShowTimeResponse {
             )
     private LocalDate showdate;
 
-    private Time showtime;
+    private LocalTime showtime;
 
     public static ShowTimeResponse convertToShowTimeDTO(ShowTime showTime){
         ShowTimeResponse showTimeDTO = ShowTimeResponse.builder()

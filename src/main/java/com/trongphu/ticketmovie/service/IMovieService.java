@@ -6,6 +6,7 @@ import com.trongphu.ticketmovie.model.Movie;
 import com.trongphu.ticketmovie.responsedata.MovieResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,7 +22,7 @@ public interface IMovieService {
 
     Movie findMovieById(Long id) throws DataNotFoundException;
 
-    Page<Movie> findAllMovies(PageRequest pageRequest);
+    Page<Movie> findPageAllMovies(Pageable pageable);
 
     Movie updateMovie(Long id,MoviesDTO moviesDTO) throws DataNotFoundException;
 
@@ -33,7 +34,6 @@ public interface IMovieService {
      * 1: Enable
      * 2: Disable
      * 3:Waiting*/
-    //Khu vực interface dữ liệu trả về client
     Page<MovieResponse> findMoviesByStatusEnable(PageRequest pageRequest);
     Page<MovieResponse> findMoviesByStatusDisable(PageRequest pageRequest);
 
@@ -52,6 +52,7 @@ public interface IMovieService {
      * */
     List<MovieResponse> getAllMoviesByStatus2();
 
+    List<MovieResponse> getAllMovieByStatus();
     /**
      * Trả về danh sách của movie sắp chiếu
      * */

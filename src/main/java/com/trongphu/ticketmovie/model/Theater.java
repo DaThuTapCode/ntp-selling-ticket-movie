@@ -1,5 +1,6 @@
 package com.trongphu.ticketmovie.model;
 
+import com.trongphu.ticketmovie.dto.request.TheaterDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,4 +35,17 @@ public class Theater {
 
     private String description;
 
+    public static Theater convertToTheater(TheaterDTO theaterDTO){
+        Theater theater = Theater
+                .builder()
+                .name(theaterDTO.getName())
+                .location(theaterDTO.getLocation())
+                .image(theaterDTO.getImage())
+                .phone(theaterDTO.getPhone())
+                .email(theaterDTO.getEmail())
+                .description(theaterDTO.getDescription())
+                .build();
+
+        return theater;
+    }
 }

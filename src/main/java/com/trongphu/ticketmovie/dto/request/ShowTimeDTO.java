@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * Created by Trong Phu on 6/2/2024 03:00:12
@@ -21,16 +22,14 @@ public class ShowTimeDTO {
 
     private Long id;
 
-
     private String moviename;
-
 
     private String screenname;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate showdate;
 
-    private Time showtime;
+    private LocalTime showtime;
 
     public static ShowTimeDTO convertToShowTimeDTO(ShowTime showTime){
         ShowTimeDTO showTimeDTO = ShowTimeDTO
@@ -44,6 +43,5 @@ public class ShowTimeDTO {
         return showTimeDTO;
 
     }
-
 
 }

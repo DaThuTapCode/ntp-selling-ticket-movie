@@ -24,4 +24,11 @@ public interface IShowTimeService {
     List<ShowTimeResponse> getShowTimesByTheater(Theater theater);
 
     List<ShowTime> findAllByMovieId(Long movieId, LocalDate showdate, LocalTime showtime);
+
+    /**
+     * ADMIN*/
+    List<ShowTime> getByTheaterScreensShowDate(Long theaterId, Long screenId, LocalDate showdate);
+
+    ShowTime createShowTime(ShowTime showTime);
+
 }

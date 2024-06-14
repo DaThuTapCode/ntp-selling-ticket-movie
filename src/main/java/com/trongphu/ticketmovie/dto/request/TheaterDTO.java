@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by Trong Phu on 5/25/2024
@@ -30,6 +31,8 @@ public class TheaterDTO {
     private String email;
 
     private String description;
+
+    private MultipartFile file;
 
     public static TheaterDTO convertToTheaterDTO(Theater theater){
         TheaterDTO theaterDTO = TheaterDTO

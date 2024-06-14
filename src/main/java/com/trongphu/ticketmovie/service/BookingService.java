@@ -64,7 +64,7 @@ public void cancelExpiredBooking() {
     // Chuyển Timestamp thành Calendar
 
     List<Booking> bookingList = bookingRepository.findBookingByStatus(StatusBooking.PENDING);
-    logger.info("Scheduled task started");
+  //  logger.info("Scheduled task started");
     for (Booking booking : bookingList) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(booking.getBookingdate().getTime());
@@ -78,6 +78,6 @@ public void cancelExpiredBooking() {
             bookingRepository.save(booking);
         }
     }
-    logger.info("Scheduled task finished");
+   // logger.info("Scheduled task finished");
 }
 }

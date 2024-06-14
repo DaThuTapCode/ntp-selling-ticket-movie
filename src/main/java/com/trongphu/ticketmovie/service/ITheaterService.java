@@ -1,9 +1,12 @@
 package com.trongphu.ticketmovie.service;
 
+import com.trongphu.ticketmovie.dto.request.TheaterDTO;
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
 import com.trongphu.ticketmovie.model.ShowTime;
 import com.trongphu.ticketmovie.model.Theater;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,8 +21,15 @@ public interface ITheaterService {
 
     Optional<Theater> getById(Long id);
 
-    Theater createTheater(Theater theater);
+    Theater createTheater(TheaterDTO theaterDTO);
 
-  //  List<Theater> findByScreens_ShowTimesContaining(ShowTime showTime);
+    /**
+     * ADMIN
+     */
+
+    Page<Theater> findPageTheater(Pageable pageable);
+
+
+    //  List<Theater> findByScreens_ShowTimesContaining(ShowTime showTime);
 
 }

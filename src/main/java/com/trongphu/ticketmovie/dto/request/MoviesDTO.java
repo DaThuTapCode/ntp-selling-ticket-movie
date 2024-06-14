@@ -18,19 +18,20 @@ import java.util.Date;
 @NoArgsConstructor
 public class MoviesDTO {
 
-    @NotBlank(message = "Title is required!")
-    @Size(min = 1, max = 300, message = "Title must be between 1 and 300 characters")
+    @NotBlank(message = "Tên phim là bắt buộc!")
+    @Size(min = 1, max = 300, message = "Tên phim từ 1 đến 300 ký tự!")
     private String title;
 
 
     private String descriptions;
 
-    @NotNull(message = "Duration must be not null!")
-    @Min(value = 1, message = "Duration must be at least 1!")
+    @NotNull(message = "Thời lượng phim không được null!")
+    @Min(value = 1, message = "Thời lượng phim phải lớn hơn 1!")
+    @Max(value = Integer.MAX_VALUE, message = "Thời lượng phim phải nhỏ hơn " + Integer.MAX_VALUE)
     private int duration;
 
-    @NotNull(message = "Release date must be not null!")
-    @Future(message = "Release date must be a future date!")
+    @NotNull(message = "Ngày phát hành không được null!")
+    @Future(message = "Ngày phát hành phải lớn hơn ngày hôm nay!")
    // @DateTimeFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate releasedate ;

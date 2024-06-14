@@ -8,6 +8,7 @@ import com.trongphu.ticketmovie.responsedata.MovieResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -27,9 +28,9 @@ import java.util.stream.Collectors;
 public class MovieService implements IMovieService {
     private final MovieRepository movieRepository;
 
+
     @Override
     public Movie crateMovie(MoviesDTO moviesDTO) {
-
         Movie newMovie = Movie.builder()
                 .title(moviesDTO.getTitle())
                 .descriptions(moviesDTO.getDescriptions())
@@ -46,16 +47,19 @@ public class MovieService implements IMovieService {
         return movieRepository.save(newMovie);
     }
 
+
     @Override
     public Movie findMovieById(Long id) throws DataNotFoundException {
         return movieRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find product witd id =" + id));
     }
 
+
     @Override
-    public Page<Movie> findAllMovies(PageRequest pageRequest) {
-        return movieRepository.findAll(pageRequest);
+    public Page<Movie> findPageAllMovies(Pageable pageable) {
+        return movieRepository.findAll(pageable);
     }
+
 
     @Override
     public Movie updateMovie(Long id, MoviesDTO moviesDTO) throws DataNotFoundException {
@@ -77,16 +81,19 @@ public class MovieService implements IMovieService {
         return null;
     }
 
+
     @Override
     public void deleteMovie(Long id) {
         Optional<Movie> optionalMovie = movieRepository.findById(id);
         optionalMovie.ifPresent(movieRepository::delete);
     }
 
+
     @Override
     public boolean existByName(String title) {
         return movieRepository.existsByTitle(title);
     }
+
 
     @Override
     public Page<MovieResponse> findMoviesByStatusEnable(PageRequest pageRequest) {
@@ -115,6 +122,11 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    public List<MovieResponse> getAllMovieByStatus() {
+        return movieRepository.findByStatus(1).stream().map(MovieResponse::convertToMovie).toList();
+    }
+
+    @Override
     public List<MovieResponse> getAllMovieUpcoming(LocalDate currentdate, Integer status) {
         return movieRepository.getMovieUpComing(currentdate, status).stream().map(MovieResponse::convertToMovie).toList();
     }
@@ -126,16 +138,12 @@ public class MovieService implements IMovieService {
             return MovieResponse.convertToMovie(movieRepository.findByIdAndStatus(id, status));
         }
         return null;
-
     }
 
     @Override
     public List<MovieResponse> getMovieSellTicketInAdvance(LocalDate currentdate) {
         return movieRepository.getMovieSellTicketInAdvance(currentdate).stream().map(MovieResponse::convertToMovie).toList();
     }
-
-
-    //Dữ liệu trả về cho client
 
 
 }

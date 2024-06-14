@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Configuration
 @RequiredArgsConstructor
+@EnableWebSecurity
 @EnableMethodSecurity
 public class WebConfigSecurity {
     @Value("${api.prefix}")
@@ -30,10 +33,12 @@ public class WebConfigSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+//                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> {
                     request
+                            //Cho phép mọi request được đi qua
                             .requestMatchers(
                                     String.format("%s/users/register", apiPrefix)
                                     , String.format("%s/users/login", apiPrefix)
@@ -46,16 +51,23 @@ public class WebConfigSecurity {
 //                                    , String.format("%s/theaters/", apiPrefix)
                             )
                             .permitAll()
+
+                            //Phải đăng nhập mới được dùng
                             .requestMatchers(HttpMethod.GET,
                                     String.format("%s/users/hihi", apiPrefix)
-                                    ,String.format("%s/seat/**", apiPrefix)
-                                    ,String.format("%s/showtime/**", apiPrefix)
-                                    ,String.format("%s/booking/**", apiPrefix)
-                            ).hasAnyRole(Role.ADMIN, Role.USER)
+                                    , String.format("%s/seat/**", apiPrefix)
+                                    , String.format("%s/showtime/**", apiPrefix)
+                                    , String.format("%s/booking/**", apiPrefix)
+                            ).hasAnyRole(Role.ADMIN, Role.USER, Role.MODERATOR)
+                            //Chỉ ADMIN và MODERATOR
+                            .requestMatchers(HttpMethod.GET,
+                                    String.format("%s/admin**", apiPrefix)
+                            ).hasAnyRole(Role.ADMIN, Role.MODERATOR)
                             .requestMatchers(HttpMethod.POST
-                                    , String.format("%s/theaters/add", apiPrefix)
-                                    , String.format("%s/admin/movies/add", apiPrefix)
-                            ).hasAnyRole(Role.ADMIN)
+                            , String.format("%s/theaters/add", apiPrefix)
+                            , String.format("%s/admin/movies**", apiPrefix)
+                            , String.format("%s/admin/showtimes/create", apiPrefix)
+                    ).hasAnyRole(Role.ADMIN, Role.MODERATOR)
                             .anyRequest()
                             .authenticated();
                 });

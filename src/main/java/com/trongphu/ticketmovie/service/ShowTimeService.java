@@ -49,8 +49,19 @@ public class ShowTimeService implements IShowTimeService{
 
     @Override
     public List<ShowTime> findAllByMovieId(Long movieId, LocalDate showdate, LocalTime showtime) {
-        System.out.println("ShowTime Find: " + showtime);
-        System.out.println("ShowDate Find: " + showdate);
         return showTimeRepository.findAllByMovieId(movieId, showdate, showtime);
+    }
+
+    /**
+     * ADMIN*/
+
+    @Override
+    public List<ShowTime> getByTheaterScreensShowDate(Long theaterId, Long screenId, LocalDate showdate) {
+        return showTimeRepository.findShowTimeByTheaterAndScreenAndShowdate(theaterId, screenId, showdate);
+    }
+
+    @Override
+    public ShowTime createShowTime(ShowTime showTime) {
+       return showTimeRepository.save(showTime);
     }
 }

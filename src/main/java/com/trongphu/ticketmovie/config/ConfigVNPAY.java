@@ -16,7 +16,6 @@ import java.util.*;
  */
 public class ConfigVNPAY {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-//    public static String vnp_ReturnUrl = "http://localhost:8080/vnpay_jsp/vnpay_return.jsp";
     public static String vnp_ReturnUrl = "http://localhost:8080/api/v1/payment/payment-callback";
     public static String vnp_TmnCode = "4VAC8KP2";
     public static String secretKey = "NU9LNV123USGJYOAPJ8IV80RWR2G1JGW";
@@ -82,7 +81,6 @@ public class ConfigVNPAY {
 
     public static String hmacSHA512(final String key, final String data) {
         try {
-
             if (key == null || data == null) {
                 throw new NullPointerException();
             }
