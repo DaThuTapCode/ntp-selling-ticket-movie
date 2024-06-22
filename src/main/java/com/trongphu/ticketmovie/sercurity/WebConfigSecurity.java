@@ -67,6 +67,7 @@ public class WebConfigSecurity {
                             , String.format("%s/theaters/add", apiPrefix)
                             , String.format("%s/admin/movies**", apiPrefix)
                             , String.format("%s/admin/showtimes/create", apiPrefix)
+                            , String.format("%s/admin/**", apiPrefix)
                     ).hasAnyRole(Role.ADMIN, Role.MODERATOR)
                             .anyRequest()
                             .authenticated();

@@ -4,6 +4,7 @@ import com.trongphu.ticketmovie.dto.request.TheaterDTO;
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
 import com.trongphu.ticketmovie.dto.respone.ResponseError;
 import com.trongphu.ticketmovie.dto.respone.ResponsePageData;
+import com.trongphu.ticketmovie.exception.DataNotFoundException;
 import com.trongphu.ticketmovie.model.Theater;
 import com.trongphu.ticketmovie.service.TheaterService;
 import com.trongphu.ticketmovie.util.FileImageUploadUtil;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -60,6 +62,21 @@ public class ADTheaterController {
     private ResponseEntity<ResponseData> getAllTheater(){
         List<Theater> theaterList = theaterService.getAllTheater();
         return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Get All Theater", theaterList), HttpStatus.OK);
+    }
+    /**
+     * API lấy theater by id
+     *
+     * */
+    @GetMapping("/{id}")
+    private ResponseEntity<ResponseData> getTheaterById(
+            @PathVariable Long id
+    ) throws DataNotFoundException {
+       Optional<Theater> theater = theaterService.getById(id);
+
+       if (theater.isEmpty()){
+            throw new DataNotFoundException("Không tìm thấy theater");
+       }
+        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Get theater by id", theater), HttpStatus.OK);
     }
 
     /**

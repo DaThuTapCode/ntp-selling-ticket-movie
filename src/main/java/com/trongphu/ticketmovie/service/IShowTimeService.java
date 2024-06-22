@@ -25,6 +25,8 @@ public interface IShowTimeService {
 
     List<ShowTime> findAllByMovieId(Long movieId, LocalDate showdate, LocalTime showtime);
 
+    List<ShowTime> findAllByMovieId2(Long movieId, LocalDate showdate);
+
     /**
      * ADMIN*/
     List<ShowTime> getByTheaterScreensShowDate(Long theaterId, Long screenId, LocalDate showdate);

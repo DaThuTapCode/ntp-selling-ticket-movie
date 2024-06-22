@@ -48,6 +48,7 @@ public class MovieService implements IMovieService {
     }
 
 
+
     @Override
     public Movie findMovieById(Long id) throws DataNotFoundException {
         return movieRepository.findById(id)
@@ -75,7 +76,9 @@ public class MovieService implements IMovieService {
             existsingMovie.setPerformers(moviesDTO.getPerformers());
             existsingMovie.setTrailer(moviesDTO.getTrailer());
             existsingMovie.setStatus(moviesDTO.getStatus());
-            existsingMovie.setImage(moviesDTO.getImage());
+            if(moviesDTO.getImage() != null){
+                existsingMovie.setImage(moviesDTO.getImage());
+            }
             return movieRepository.save(existsingMovie);
         }
         return null;

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -38,6 +39,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerValidationException(Exception e, WebRequest request) {
         System.out.println("------> Đã bắt được exception");
+        return setData(e, request);
+    }
+    @ExceptionHandler({SQLException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerSQLExeption(Exception e, WebRequest request) {
+        System.out.println("------> Đã bắt được exception SQL");
         return setData(e, request);
     }
 

@@ -39,5 +39,13 @@ public class ADScreenController {
         }
     }
 
+
+    @PostMapping("/create")
+    public ResponseEntity<ResponseData> createScreen(
+            @RequestBody Screen screen
+    ){
+        screenService.create(screen);
+        return new ResponseEntity(new ResponseData(HttpStatus.CREATED.value(), "Tạo thành công phòng chiếu mới!", screen),HttpStatus.CREATED);
+    }
 }
 

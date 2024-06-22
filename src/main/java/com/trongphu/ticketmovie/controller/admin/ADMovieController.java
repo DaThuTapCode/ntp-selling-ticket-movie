@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public class ADMovieController {
     public ResponseData getAllMovies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Movie> moviePage = movieService.findPageAllMovies(pageable);
         return new ResponsePageData(HttpStatus.OK.value(), "All movies", moviePage.getContent(), moviePage.getTotalElements());
     }
@@ -95,15 +96,42 @@ public class ADMovieController {
             // Lưu file và cập nhật image trong moviesDTO
             String filename = storeFile(file);
             moviesDTO.setImage(filename);
-            // Lưu vào đối tượng movies trong DB
-            movieService.crateMovie(moviesDTO);
-            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Movies created successfully!", moviesDTO
+          Movie movie =   movieService.crateMovie(moviesDTO);
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Movies created successfully!", movie
             ), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseData(HttpStatus.BAD_REQUEST.value(), "Ảnh chưa được chọn!"), HttpStatus.BAD_REQUEST);
         }
-
     }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<ResponseData> updateMOvie(
+            @PathVariable Long id,
+            @Valid @ModelAttribute MoviesDTO moviesDTO
+    )throws Exception {
+        MultipartFile file = moviesDTO.getFile();
+        if (file != null && !file.isEmpty()) {
+            // Kiểm tra kích thước file
+            if (file.getSize() > 10 * 1024 * 1024) { // Kích thước lớn hơn 10MB
+                return new ResponseEntity<>(new ResponseData(HttpStatus.PAYLOAD_TOO_LARGE.value(), "File phải nhỏ hơn 10MB"), HttpStatus.PAYLOAD_TOO_LARGE);
+            }
+            // Kiểm tra định dạng file
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return new ResponseEntity<>(new ResponseData(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "File phải là ảnh!"), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
+            // Lưu file và cập nhật image trong moviesDTO
+            String filename = storeFile(file);
+            moviesDTO.setImage(filename);
+            Movie movie =   movieService.updateMovie(id, moviesDTO);
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Sửa phim thành công!", movie
+            ), HttpStatus.OK);
+        } else {
+            Movie movie =   movieService.updateMovie(id, moviesDTO);
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Sửa phim thành công!", movie
+            ), HttpStatus.OK);        }
+    }
+
 
     /**
      * Method trả về 1 tên file đã được xử lý
@@ -114,7 +142,7 @@ public class ADMovieController {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         //Them UUID vao truc tiep file de dam bao ten file la duy nhat!!
         String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-        //Duong dan den thu muc ban muon luu  /////file java.nio.file
+        //Duong dan den thu muc muon luu  /////file java.nio.file
         Path uploadDir = Paths.get("uploads");
         //Kiem tra va tao thu muc ne no khong ton tai
         if (!Files.exists(uploadDir)) {

@@ -2,6 +2,7 @@ package com.trongphu.ticketmovie.controller.user;
 
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
 import com.trongphu.ticketmovie.dto.respone.ResponseError;
+import com.trongphu.ticketmovie.model.ShowTime;
 import com.trongphu.ticketmovie.model.Theater;
 import com.trongphu.ticketmovie.responsedata.ShowTimeResponse;
 import com.trongphu.ticketmovie.service.ShowTimeService;
@@ -13,8 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,7 +40,7 @@ public class ShowTimesController {
     @GetMapping("/{id}")
     public ResponseData getById(
             @PathVariable Long id
-    ){
+    ) {
         return new ResponseData(HttpStatus.OK.value(), "Lấy showtime theo id", showTimeService.getById(id));
     }
 
@@ -69,7 +73,17 @@ public class ShowTimesController {
             }
         }
 
-        return new ResponseData(HttpStatus.OK.value(), "Get all show time by Movie", showTimeService.findAllByMovieId(movieId, showdate, showtime));
+        List<ShowTime> showTimeList;
+
+        LocalDate now = LocalDate.now();
+
+        if (showdate.equals(now)) {
+            showTimeList = showTimeService.findAllByMovieId(movieId, showdate, showtime);
+            return new ResponseData(HttpStatus.OK.value(), "Get all show time by Movie", showTimeList);
+        }
+
+        showTimeList = showTimeService.findAllByMovieId2(movieId, showdate);
+        return new ResponseData(HttpStatus.OK.value(), "Get all show time by Movie", showTimeList);
     }
 
 }

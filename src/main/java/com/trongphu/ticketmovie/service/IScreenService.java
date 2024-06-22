@@ -12,4 +12,6 @@ import java.util.List;
 public interface IScreenService {
 
     List<Screen> getScreensByTheater(Theater theater);
+
+    Screen create(Screen screen);
 }

@@ -29,11 +29,20 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Long> {
     /**
      * Lấy ra suất chiếu phim theo phim và ngày chiếu, giờ chiếu
      */
-    @Query("select st from showtimes st where  st.movie.id = :movieId and st.showdate = :dateNow and st.showtime >= :timenow")
+    @Query("select st from showtimes st where  st.movie.id = :movieId and st.showdate = :dateNow and st.showtime >= :timenow ORDER BY st.showtime asc ")
     List<ShowTime> findAllByMovieId(
             @Param("movieId") Long movieId
             , @Param("dateNow") LocalDate showtdate
             , @Param("timenow") LocalTime showtime
+    );
+
+    /**
+     * Lấy ra suất chiếu phim theo phim và ngày chiếu, giờ chiếu
+     */
+    @Query("select st from showtimes st where  st.movie.id = :movieId and st.showdate = :dateNow ORDER BY st.showtime asc ")
+    List<ShowTime> findAllByMovieId2(
+            @Param("movieId") Long movieId
+            , @Param("dateNow") LocalDate showtdate
     );
 
     /**
@@ -44,7 +53,5 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Long> {
             @Param("theaterId") Long theaterId
             , @Param("screenId") Long screenId
             , @Param("showdate") LocalDate showDate);
-
-
 
 }

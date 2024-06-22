@@ -92,7 +92,8 @@ public class MoviesController {
      */
     @GetMapping("/movie-is-showing")
     public ResponseData getMoviesIsShowing() {
-        return new ResponseData(HttpStatus.OK.value(), "Phim Đang Chiếu", movieService.getAllMoviesIsShowing(LocalDate.now(), LocalTime.now(), 1));
+        List<MovieResponse> list = movieService.getAllMoviesIsShowing(LocalDate.now(), LocalTime.now(), 1);
+        return new ResponseData(HttpStatus.OK.value(), "Phim Đang Chiếu", list );
     }
 
 
@@ -102,7 +103,7 @@ public class MoviesController {
      */
     @GetMapping("/movie-upcoming")
     public ResponseData getMoviesStatus3() {
-        return new ResponseData(HttpStatus.OK.value(), "Phim Sắp Chiếu", movieService.getAllMovieUpcoming(LocalDate.now(), 3));
+        return new ResponseData(HttpStatus.OK.value(), "Phim Sắp Chiếu", movieService.getAllMovieUpcoming(LocalDate.now(), 1));
     }
 
     /**

@@ -12,14 +12,18 @@ import com.trongphu.ticketmovie.util.EmailUtil;
 import com.trongphu.ticketmovie.util.StatusBooking;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +41,12 @@ import java.util.*;
 public class PaymentController {
 
 private  final BookingService bookingService;
+
 private final EmailUtil emailUtil;
+
+@Value("${frontend.url}/payment-result")
+private String urlBaseSuccess;
+
 
 /**
  * API tạo 1 giao dịch mới trả về đường dẫn đến trang thanh toán giao dịch*/
@@ -47,6 +56,7 @@ private final EmailUtil emailUtil;
             @PathParam("price") long price
            , @PathParam("id_booking") Long id_booking
     ) throws UnsupportedEncodingException {
+
         System.out.println(id_booking);
         System.out.println(price);
         String orderType = "other";
@@ -62,7 +72,7 @@ private final EmailUtil emailUtil;
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
         vnp_Params.put("vnp_CurrCode", "VND");
-//        vnp_Params.put("vnp_BankCode", "");
+//      vnp_Params.put("vnp_BankCode", "");
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
@@ -139,14 +149,16 @@ private final EmailUtil emailUtil;
  * API được gọi sau khi giao dịch được kết thúc
  * */
     @GetMapping("payment-callback")
-    public ResponseData callback(
+    public void callback(
             @RequestParam Map<String, String> queryParams
-            , HttpServletRequest resp
-    ) throws DataNotFoundException {
+            , HttpServletRequest req
+            , HttpServletResponse resp
+    ) throws DataNotFoundException, IOException {
         String vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
         String vnp_TransactionNo = queryParams.get("vnp_TransactionNo");
         String vnp_OrderInfo = queryParams.get("vnp_OrderInfo");
         String id_booking = queryParams.get("id_booking");
+        String paymentResult = urlBaseSuccess + "/payment-result";
         if(id_booking != null && !id_booking.isEmpty()){
             if("00".equals(vnp_ResponseCode)){
                 //Giao dịch thành công
@@ -157,24 +169,27 @@ private final EmailUtil emailUtil;
                 bookingService.save(booking);
                 Map<String, Object> model = new HashMap<>();
                 model.put("booking", booking);
-
                 try {
                     emailUtil.sendPaymentConfirmationEmail((String) booking.getUser().getEmail(), "Xác nhận thanh toán", model);
                     //return "Email sent successfully";
                 } catch (MessagingException e) {
                     e.printStackTrace();
-                    //return "Failed to send email";
                 }
-                return new ResponseData(HttpStatus.OK.value(), "Thanh toán thành công!", BookingDTO.convertoBookingDTO(booking));
+
+                String redirectUrl = String.format("%s/%s",
+                        urlBaseSuccess,
+                        URLEncoder.encode(String.valueOf(booking.getId()), StandardCharsets.UTF_8.toString()));
+                resp.sendRedirect(redirectUrl);
+               // return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Thanh toán thành công!", BookingDTO.convertoBookingDTO(booking)), HttpStatus.OK);
             }else {
                 Booking booking = bookingService.finById(Long.parseLong(id_booking)).orElseThrow(() -> new DataNotFoundException("Không tồn tại booking này!!"));
                 booking.setStatus(StatusBooking.CANCELED);
                 bookingService.save(booking);
                 //Giao dịch thất bại
-                return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Thanh toán thất bại");
+         //       return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Thanh toán thất bại"), HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Dữ liệu đầu vào không hợp lệ!");
+    //    return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Dữ liệu đầu vào không hợp lệ!"), HttpStatus.BAD_REQUEST);
     }
 }
 

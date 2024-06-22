@@ -21,4 +21,11 @@ public class ScreenService implements IScreenService{
     public List<Screen> getScreensByTheater(Theater theater) {
         return screenRepository.findByTheater(theater);
     }
+
+    @Override
+    public Screen create(Screen screen) {
+        screen.setId(null);
+        return screenRepository.save(screen);
+    }
+
 }

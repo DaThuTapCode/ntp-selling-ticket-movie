@@ -31,17 +31,5 @@ public class TheaterController {
         return new ResponseData(HttpStatus.ACCEPTED.value(), "Theater get by id", service.getById(id));
     }
 
-    @PostMapping("/add")
-    public ResponseData createTheater(@ModelAttribute TheaterDTO theaterDTO){
-        return new ResponseData(HttpStatus.CREATED.value(), "Create theater successfully! ", theaterDTO);
-    }
-
-//    @GetMapping("/showtime-of-theater")
-//    public ResponseData showtimeOfTheater(
-//            @RequestBody ShowTime showTime
-//            ){
-//        return new ResponseData(HttpStatus.OK.value(), "Get show time of theater", service.findByScreens_ShowTimesContaining(showTime));
-//    }
-
 
 }

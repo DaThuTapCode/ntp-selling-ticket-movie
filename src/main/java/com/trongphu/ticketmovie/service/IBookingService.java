@@ -21,6 +21,9 @@ public interface IBookingService {
      * */
     List<BookingDTO> findByUsername(String username);
 
+    /**
+     * Lấy ra kết quả giao dich theo id*/
+    BookingDTO findByIdBookingAndUserName(Long id, String username);
 
     /**
      * Lưu giao dịch vào cơ sở dữ liệu

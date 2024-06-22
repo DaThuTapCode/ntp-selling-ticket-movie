@@ -62,21 +62,21 @@ public class UserService implements IUserService {
         String email = userDTO.getEmail();
 
         if (userRepository.existsByUsername(userName)) {
-            throw new ExistsDataException("User name already exists!");
+            throw new ExistsDataException("Tên người dùng đã tồn tại!");
         }
 
-        if(userRepository.existsByEmail(email)){
-            throw new ExistsDataException("Email already exists!");
+        if (userRepository.existsByEmail(email)) {
+            throw new ExistsDataException("Email đã tồn tại!");
         }
 
         if (!userDTO.getPassword().equals(userDTO.getRetypepassword())) {
-            throw  new ExistsDataException("Password dose is not match!");
+            throw new ExistsDataException("Password không khớp!");
         }
 
         Role role = roleRepository.findById(userDTO.getRole())
-                .orElseThrow(() -> new DataNotFoundException("Role not found!"));
-        if(role.getName().equals(Role.ADMIN)){
-            throw new PermissionDenyException("You can not register account ADMIN!");
+                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy chức vụ này!"));
+        if (role.getName().equals(Role.ADMIN)) {
+            throw new PermissionDenyException("Đã có lỗi trong quá trình tạo tài khoản!!");
         }
         User newUser = User.builder()
                 .fullname(userDTO.getFullname())
@@ -92,12 +92,13 @@ public class UserService implements IUserService {
         newUser.setRole(role);
 
         //Kiem tra neu co account id, khong yeu cau password
-        if (userDTO.getFacebookacountid() == 0 && userDTO.getGoogleacountid() == 0) {
-            String password = userDTO.getPassword();
-            String endcodedPassword = passwordEncoder.encode(password);
-            newUser.setPassword(endcodedPassword);
+        if (userDTO.getFacebookacountid() != null && userDTO.getGoogleacountid()  != null){
+            if (userDTO.getFacebookacountid() == 0 && userDTO.getGoogleacountid() == 0) {
+                String password = userDTO.getPassword();
+                String endcodedPassword = passwordEncoder.encode(password);
+                newUser.setPassword(endcodedPassword);
+            }
         }
-
         return userRepository.save(newUser);
     }
 
@@ -109,8 +110,8 @@ public class UserService implements IUserService {
         }
         if (optionalUser.get().getFacebookacountid() == 0
                 && optionalUser.get().getGoogleacountid() == 0) {
-            if (!passwordEncoder.matches(password, optionalUser.get().getPassword())){
-                throw  new DataNotFoundException("Invalid User name or password!!");
+            if (!passwordEncoder.matches(password, optionalUser.get().getPassword())) {
+                throw new DataNotFoundException("Invalid User name or password!!");
             }
         }
 

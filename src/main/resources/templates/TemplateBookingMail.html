@@ -1,41 +1,84 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác nhận thanh toán</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f7;
+            color: #51545e;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: none;
         }
         .container {
-            width: 80%;
+            width: 100%;
             margin: 0 auto;
-            border: 1px solid #ccc;
             padding: 20px;
-            background-color: #f9f9f9;
+            max-width: 600px;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
         }
         .header {
             text-align: center;
-            padding-bottom: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e7eb;
         }
         .header h1 {
+            color: #72BE42;
+            margin: 0;
+            font-size: 24px;
+        }
+        .header h2 {
             color: #333;
+            margin: 0;
+            font-size: 20px;
+            font-weight: normal;
         }
         .details {
-            margin-bottom: 20px;
+            padding: 20px 0;
         }
         .details h2 {
             color: #333;
+            font-size: 18px;
+            margin-bottom: 10px;
         }
         .details p {
             margin: 5px 0;
+            font-size: 16px;
         }
         .footer {
             text-align: center;
-            margin-top: 20px;
+            padding: 20px 0;
             color: #777;
+            border-top: 1px solid #e5e7eb;
         }
-        .text-green{
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #3869d4;
+            text-decoration: none;
+        }
+        .text-green {
             color: #72BE42;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #e5e7eb;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -63,7 +106,7 @@
             <p><strong>Địa chỉ:</strong> <span th:text="${detail.theater.location}"></span></p>
             <p><strong>Ngày chiếu:</strong> <span th:text="${detail.showtime.showdate}"></span></p>
             <p><strong>Giờ chiếu:</strong> <span th:text="${detail.showtime.showtime}"></span></p>
-            <p><strong>Ghế:</strong> <span th:text="${detail.seat.seatrow}"></span><span th:text="${detail.seat.seatnumber}"></span></p>
+            <p><strong>Ghế:</strong> <span th:text="${detail.seat.seatrow}"></span> <span th:text="${detail.seat.seatnumber}"></span></p>
             <p><strong>Loại ghế:</strong> <span th:text="${detail.seat.type}"></span></p>
             <p><strong>Giá vé:</strong> <span th:text="${detail.price}"></span></p>
             <hr/>

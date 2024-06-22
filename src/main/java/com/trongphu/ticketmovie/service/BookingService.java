@@ -40,6 +40,11 @@ public class BookingService implements IBookingService{
     }
 
     @Override
+    public BookingDTO findByIdBookingAndUserName(Long id, String username) {
+        return BookingDTO.convertoBookingDTO(bookingRepository.findBookingByIđAnUserr(id, username));
+    }
+
+    @Override
     public BookingDTO save(Booking booking) {
         return BookingDTO.convertoBookingDTO(bookingRepository.save(booking));
     }
@@ -69,7 +74,7 @@ public void cancelExpiredBooking() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(booking.getBookingdate().getTime());
         // Tăng thời gian lên 5 phút
-        calendar.add(Calendar.MINUTE, 5);
+        calendar.add(Calendar.MINUTE, 4);
         // Chuyển lại thành Timestamp
         Timestamp newDateBooking = new Timestamp(calendar.getTimeInMillis());
         Timestamp now =  Timestamp.valueOf(LocalDateTime.now());

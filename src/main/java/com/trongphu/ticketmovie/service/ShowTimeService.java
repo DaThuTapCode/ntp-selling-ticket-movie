@@ -52,6 +52,11 @@ public class ShowTimeService implements IShowTimeService{
         return showTimeRepository.findAllByMovieId(movieId, showdate, showtime);
     }
 
+    @Override
+    public List<ShowTime> findAllByMovieId2(Long movieId, LocalDate showdate) {
+        return showTimeRepository.findAllByMovieId2(movieId, showdate);
+    }
+
     /**
      * ADMIN*/
 

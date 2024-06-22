@@ -31,23 +31,23 @@ public class MoviesDTO {
     private int duration;
 
     @NotNull(message = "Ngày phát hành không được null!")
-    @Future(message = "Ngày phát hành phải lớn hơn ngày hôm nay!")
+    //@Future(message = "Ngày phát hành phải lớn hơn ngày hôm nay!")
    // @DateTimeFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate releasedate ;
 
-    @NotNull(message = "Genre must be not null!")
-    @Size(min = 1, max = 100, message = "Genre must be between 1 and 100 characters!")
+    @NotNull(message = "Thể loại không được null!!")
+    @Size(min = 1, max = 100, message = "Thể loại từ 1 đến 100 ký tự!")
     private String genre;
 
 
-    @Size(min = 1, max = 100, message = "Genre must be between 1 and 100 characters!")
+    @Size(min = 1, max = 100, message = "Ngôn ngữ từ 1 đến 100 ký tự!")
     private String language;
 
 
     private String performers;
 
-    @Size(min = 1, max = 200, message = "Director must be 1 and 200 characters!")
+    @Size(min = 1, max = 200, message = "Đạo diễn từ 1 đến 200 ký tự!")
     private String director;
 
 

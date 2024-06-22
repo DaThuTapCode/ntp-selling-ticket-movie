@@ -40,18 +40,20 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             ,@Param("status") Integer status
             );
 
-    /**
-     * Lay ra phim dang chieu theo cac tieu chi
-     * - Ngay phat hanh <= ngay hien tai
-     * - Co suat chieu
-     *
-     * */
-    @Query("select  mvs from  movies mvs  join mvs.showtimes st where  mvs.releasedate <= :currentdate and mvs.status = :status and st.showdate >= :currentdate and st.showtime >= :currenttime")
+    @Query("SELECT DISTINCT mvs FROM movies mvs JOIN mvs.showtimes st " +
+            "WHERE mvs.releasedate <= :currentdate " +
+            "AND mvs.status = :status " +
+            "AND (" +
+            "    (st.showdate = :currentdate AND st.showtime >= :currenttime) " +
+            "    OR " +
+            "    (st.showdate > :currentdate) " +
+            ")")
     List<Movie> getMovieIsShowing(
-            @Param("currentdate") LocalDate currentdate
-            , @Param("currenttime")LocalTime localTime
-            , @Param("status") Integer status
+            @Param("currentdate") LocalDate currentdate,
+            @Param("currenttime") LocalTime currenttime,
+            @Param("status") Integer status
     );
+
 
 
     /**

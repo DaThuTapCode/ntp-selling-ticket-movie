@@ -46,4 +46,6 @@ public class ShowTime {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime showtime;
 
+
+
 }

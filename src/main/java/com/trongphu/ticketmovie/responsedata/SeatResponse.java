@@ -38,7 +38,6 @@ public class SeatResponse {
                 .type(seat.getType())
                 .status(seat.getStatus())
                 .build();
-
         return seatResponse;
     }
 }
