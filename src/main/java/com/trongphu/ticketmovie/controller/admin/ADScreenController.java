@@ -5,6 +5,7 @@ import com.trongphu.ticketmovie.dto.respone.ResponseError;
 import com.trongphu.ticketmovie.model.Screen;
 import com.trongphu.ticketmovie.model.Theater;
 import com.trongphu.ticketmovie.service.ScreenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class ADScreenController {
 
     @PostMapping("/create")
     public ResponseEntity<ResponseData> createScreen(
-            @RequestBody Screen screen
+           @Valid @RequestBody Screen screen
     ){
         screenService.create(screen);
         return new ResponseEntity(new ResponseData(HttpStatus.CREATED.value(), "Tạo thành công phòng chiếu mới!", screen),HttpStatus.CREATED);

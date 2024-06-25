@@ -22,14 +22,15 @@ public class UserDTO {
 
     private Long role;
 
-    @Size(min = 3, max = 100, message = "Full name 3-100 character!")
+    @Size(min = 3, max = 100, message = "Tên từ 3 đến 100 ký tự!")
     private String fullname;
 
-    @NotBlank(message = "UserName must be not blank!")
+    @NotBlank(message = "Tên đăng nhập không được để trống!")
+    @Size(min = 3, max = 100, message = "Tên đăng nhập từ 3 - 100 ký tự!")
     private String username;
 
-    @NotBlank(message = "Password must be not blank!")
-    @Size(min = 6, max = 200,message = "Pass word between 6 - 200 character!")
+    @NotBlank(message = "Mật khẩu không được để trống!")
+    @Size(min = 6, max = 200,message = "Mật khẩu từ 6 - 200 ký tự!")
     private String password;
 
     private Integer facebookacountid;
@@ -38,7 +39,7 @@ public class UserDTO {
 
     private String retypepassword;
 
-    @NotBlank(message = "Email must be not blank!")
+    @NotBlank(message = "Email không được trống!")
     private String email;
 
     private String image;

@@ -9,11 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -33,24 +31,48 @@ public class ADStatisticalController {
     @Autowired
     private IStatisticalService statisticalService;
 
-    @GetMapping("/daily-revenue")
-    public ResponseEntity<ResponseData> getDailyRevenue() {
-
-        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu ngày", statisticalService.getDailyRevenue()), HttpStatus.OK);
+    @GetMapping("/daily-revenue/{date}")
+    public ResponseEntity<ResponseData> getDailyRevenue(
+            @PathVariable LocalDate date,
+            @RequestParam(required = false) Long theaterId
+    ) {
+        if (theaterId != null) {
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu ngày của rạp", statisticalService.getDailyRevenueTheater(date, theaterId)), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu ngày", statisticalService.getDailyRevenue(date)), HttpStatus.OK);
     }
 
-    @GetMapping("/weekly-revenue")
-    public ResponseEntity<ResponseData> getWeeklyRevenue() {
-        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu tuần", statisticalService.getWeeklyRevenue()), HttpStatus.OK);
-    }
+//    @GetMapping("/weekly-revenue")
+//    public ResponseEntity<ResponseData> getWeeklyRevenue(
+//            @RequestParam(required = false) Long theaterId
+//    ) {
+//        if(theaterId != null){
+//            LocalDate date = LocalDate.now();
+//            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu tuần của rạp", statisticalService.getMonthlyRevenueTheater(date, theaterId)), HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu tuần", statisticalService.getWeeklyRevenue()), HttpStatus.OK);
+//    }
 
     @GetMapping("/monthly-revenue")
-    public ResponseEntity<ResponseData> getMonthlyRevenue() {
+    public ResponseEntity<ResponseData> getMonthlyRevenue(
+            @RequestParam(required = false) Long theaterId
+    ) {
+        if (theaterId != null) {
+            LocalDate date = LocalDate.now();
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu tháng của rạp", statisticalService.getMonthlyRevenueTheater(date, theaterId)), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu tháng", statisticalService.getMonthlyRevenue()), HttpStatus.OK);
     }
 
     @GetMapping("/yearly-revenue")
-    public ResponseEntity<ResponseData> getYearRevenue() {
+    public ResponseEntity<ResponseData> getYearRevenue(
+            @RequestParam(required = false) Long theaterId
+    ) {
+        if (theaterId != null) {
+            LocalDate date = LocalDate.now();
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu năm", statisticalService.getYearlyRevenueTheater(date, theaterId)), HttpStatus.OK);
+
+        }
         return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu năm", statisticalService.getYearRevenue()), HttpStatus.OK);
     }
 
@@ -58,7 +80,7 @@ public class ADStatisticalController {
     public ResponseEntity<ResponseData> getTopMoviesByRevenue(
             @RequestParam int limit
     ) {
-        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Lấy top " + limit +  " phim có doanh thu cao", statisticalService.getTopMoviesByRevenue(limit)), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Lấy top " + limit + " phim có doanh thu cao", statisticalService.getTopMoviesByRevenue(limit)), HttpStatus.OK);
     }
 
     @GetMapping("/top-current-movies-by-revenue")
@@ -73,7 +95,7 @@ public class ADStatisticalController {
     public ResponseEntity<ResponseData> getTopMoviesByShowtimeCount(
             @RequestParam int limit
     ) {
-        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Lấy top " + limit +  " phim có doanh thu cao", statisticalService.getTopMoviesByShowtimeCount(limit)), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Lấy top " + limit + " phim có doanh thu cao", statisticalService.getTopMoviesByShowtimeCount(limit)), HttpStatus.OK);
     }
 
     @GetMapping("/ticket-count-by-day")
@@ -95,4 +117,5 @@ public class ADStatisticalController {
     public ResponseEntity<ResponseData> getTicketCountByYear() {
         return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Lấy top phim có doanh thu cao", statisticalService.getTicketCountByYear()), HttpStatus.OK);
     }
+
 }

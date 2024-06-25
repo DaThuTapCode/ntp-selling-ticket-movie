@@ -1,13 +1,13 @@
 package com.trongphu.ticketmovie.controller.user;
 
-import com.trongphu.ticketmovie.dto.request.MoviesDTO;
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
 import com.trongphu.ticketmovie.dto.respone.ResponseError;
 import com.trongphu.ticketmovie.responsedata.MovieListResponse;
 import com.trongphu.ticketmovie.responsedata.MovieResponse;
 import com.trongphu.ticketmovie.service.MovieService;
-import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,26 +15,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.Iterator;
+
 import java.util.List;
-import java.util.UUID;
+
 
 /**
  * @author Trong Phu
@@ -53,7 +43,7 @@ public class MoviesController {
     @GetMapping("images/{imageName}")
     public ResponseEntity<?> viewImage(@PathVariable String imageName) {
         try {
-            java.nio.file.Path imagePath = Paths.get("uploads/" + imageName);
+            Path imagePath = Paths.get("uploads/" + imageName);
             UrlResource resource = new UrlResource(imagePath.toUri());
             if (resource.exists()) {
                 return ResponseEntity.ok()
@@ -111,7 +101,9 @@ public class MoviesController {
      * GET http://localhost:8080/api/v1/movies/detail-movie/{{id}}/{{status}}
      */
     @GetMapping("/detail-movie/{id}/{status}")
-    public ResponseData getDetailMovie(@PathVariable("id") Long id, @PathVariable("status") Integer status) {
+    public ResponseData getDetailMovie(
+            @PathVariable("id") Long id
+            , @PathVariable("status") Integer status) {
         MovieResponse movieResponse = movieService.getDetailMovieByIdAndStatus(id, status);
         if (movieResponse != null) {
             if (status == 1 || status == 3) {

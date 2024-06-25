@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserLoginDTO {
 
-    @NotBlank(message = "Username is required!")
+    @NotBlank(message = "Tên đăng nhập là bắt buộc!")
     private String username;
 
-    @NotBlank(message = "Password is required!")
+    @NotBlank(message = "Mật khẩu là bắt buộc!")
     private String password;
 
 //    @Min(value = 1, message = "You must enter role id > 1")

@@ -36,6 +36,7 @@ public class Theater {
     private String description;
 
     public static Theater convertToTheater(TheaterDTO theaterDTO){
+
         Theater theater = Theater
                 .builder()
                 .name(theaterDTO.getName())

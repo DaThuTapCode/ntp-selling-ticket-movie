@@ -36,7 +36,7 @@ public class BookingService implements IBookingService{
 
     @Override
     public List<BookingDTO> findByUsername(String username) {
-        return bookingRepository.findByUser_Username(username).stream().map(BookingDTO::convertoBookingDTO).toList();
+        return bookingRepository.findByUser_UsernameAndAndStatusOrderByBookingdateDesc(username, StatusBooking.CONFIRMED).stream().map(BookingDTO::convertoBookingDTO).toList();
     }
 
     @Override

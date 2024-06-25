@@ -1,22 +1,32 @@
 package com.trongphu.ticketmovie.controller.user;
 
 import com.trongphu.ticketmovie.component.JwtTokenUtil;
+import com.trongphu.ticketmovie.dto.request.ChangeInfoUserDTO;
+import com.trongphu.ticketmovie.dto.request.ChangePasswordDTO;
 import com.trongphu.ticketmovie.dto.request.UserDTO;
 import com.trongphu.ticketmovie.dto.request.UserLoginDTO;
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
 import com.trongphu.ticketmovie.dto.respone.ResponseError;
 import com.trongphu.ticketmovie.dto.respone.UserLoginResponse;
 import com.trongphu.ticketmovie.exception.DataNotFoundException;
+import com.trongphu.ticketmovie.exception.ExistsDataException;
 import com.trongphu.ticketmovie.model.User;
 import com.trongphu.ticketmovie.service.UserService;
+import com.trongphu.ticketmovie.util.FileImageUploadUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +70,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseData createUser(@Valid @RequestBody UserDTO userDTO) throws Exception {
         User u = userService.createUser(userDTO);
-        return new ResponseData(HttpStatus.CREATED.value(), "Register new user successfully!", u);
+        return new ResponseData(HttpStatus.CREATED.value(), "Đăng ký tài khoản mới thành công!", u);
     }
 
 
@@ -78,12 +88,85 @@ public class UserController {
         Optional<User> user = userService.findByUsername(jwtTokenUtil.extractUserName(token));
         return new ResponseData(
                 HttpStatus.ACCEPTED.value(),
-                "Login successfully!",
+                "Đăng nhập thành công!",
                 UserLoginResponse.
                         builder().
-                        message("Login successfully!")
+                        message("Đăng nhập thành công!")
                         .token(token)
-                        .userDTO(UserDTO.builder().username(user.get().getUsername()).status(user.get().getStatus()).role(user.get().getRole().getId()).email(user.get().getEmail()).build())
+                        .userDTO(UserDTO
+                                .builder()
+                                .username(user.get().getUsername())
+                                .status(user.get().getStatus())
+                                .role(user.get().getRole().getId())
+                                .email(user.get().getEmail())
+                                .fullname(user.get().getFullname())
+                                .image(user.get().getImage())
+                                .build())
                         .build());
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<ResponseData> changePassword(
+             @RequestBody @Valid ChangePasswordDTO changePasswordDTO
+             , HttpServletRequest req
+            ) throws DataNotFoundException {
+
+        String authHeader = req.getHeader("Authorization");
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+            return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Lỗi chưa đăng nhập!"), HttpStatus.BAD_REQUEST);
+        }
+        final String token = authHeader.substring(7);
+        final String username = jwtTokenUtil.extractUserName(token);
+       User userChangePass =  userService.findByUsername(username).orElseThrow(() -> new DataNotFoundException("User không hợp lệ!"));
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if(passwordEncoder.matches(changePasswordDTO.getPasswordCurrent(), userChangePass.getPassword())){
+            String newPass =
+            passwordEncoder.encode(changePasswordDTO.getPasswordNew());
+            userChangePass.setPassword(newPass);
+            userService.changePassword(userChangePass);
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Đổi mật khẩu thành công!"), HttpStatus.OK);
+        }
+       return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Có lỗi khi đổi mật khẩu!"), HttpStatus.BAD_REQUEST);
+    }
+    @PutMapping(value = "/change-info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseData> changeInfo(
+             @RequestBody @Valid ChangeInfoUserDTO changeInfoUserDTO
+             , HttpServletRequest req
+            ) throws DataNotFoundException, Exception {
+
+        String authHeader = req.getHeader("Authorization");
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+            return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Lỗi chưa đăng nhập!"), HttpStatus.BAD_REQUEST);
+        }
+        final String token = authHeader.substring(7);
+        final String username = jwtTokenUtil.extractUserName(token);
+       User userChangeInfo =  userService.findByUsername(username).orElseThrow(() -> new DataNotFoundException("User không hợp lệ!"));
+
+       if (!userChangeInfo.getEmail().equals(changeInfoUserDTO.getEmail())){
+         boolean check =   userService.existEmail(userChangeInfo.getEmail());
+         if(check){
+             throw  new ExistsDataException("Email đã tồn tại");
+         }
+       }
+       MultipartFile file = changeInfoUserDTO.getFile();
+        if(file != null && !file.isEmpty()){
+            if(file.getSize() > 1 * 1024 * 1024){
+                return new ResponseEntity<>(new ResponseError(HttpStatus.PAYLOAD_TOO_LARGE.value(), "File lớn hơn 1mb"),HttpStatus.PAYLOAD_TOO_LARGE) ;
+            }
+            String contentTypeFile = file.getContentType();
+            if(contentTypeFile == null || !contentTypeFile.startsWith("image/")) {
+                return new ResponseEntity<>(new ResponseError(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "File ảnh không hợp lệ!"),HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
+            FileImageUploadUtil.deleteFile(userChangeInfo.getImage());
+            String filename = FileImageUploadUtil.storeFile(file);
+            userChangeInfo.setImage(filename);
+            userChangeInfo.setEmail(changeInfoUserDTO.getEmail());
+            userChangeInfo.setFullname(changeInfoUserDTO.getFullname());
+            return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Cập nhật thông tin thành công!",userService.changeInfoUser(userChangeInfo)), HttpStatus.OK);
+        }
+
+        userChangeInfo.setEmail(changeInfoUserDTO.getEmail());
+        userChangeInfo.setFullname(changeInfoUserDTO.getFullname());
+        return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Cập nhật thông tin thành công!",userService.changeInfoUser(userChangeInfo)), HttpStatus.OK);
     }
 }

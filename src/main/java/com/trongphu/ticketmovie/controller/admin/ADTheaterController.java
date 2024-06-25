@@ -102,5 +102,30 @@ public class ADTheaterController {
         return  new ResponseData(HttpStatus.CREATED.value(), "Tạo thành công rạp mới!", theaterDTO1);
     }
 
+    @PutMapping(value = "update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    private ResponseData updateTheater(
+            @PathVariable Long id,
+            @Valid @ModelAttribute TheaterDTO theaterDTO
+    ) throws Exception {
+        MultipartFile file = theaterDTO.getFile();
+        if(file != null && !file.isEmpty()){
+            if(file.getSize() > 10 * 1024 * 1024){
+                return  new ResponseError(HttpStatus.PAYLOAD_TOO_LARGE.value(), "File lớn hơn 10mb");
+            }
+            String contentTypeFile = file.getContentType();
+            if(contentTypeFile == null || !contentTypeFile.startsWith("image/")) {
+                return new ResponseError(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "File ảnh không hợp lệ!");
+            }
+            String filename = FileImageUploadUtil.storeFile(file);
+            theaterDTO.setImage(filename);
+            TheaterDTO theaterDTO1 =  TheaterDTO.convertToTheaterDTO(theaterService.updateTheater(id,theaterDTO));
+            return  new ResponseData(HttpStatus.CREATED.value(), "Update rạp thành công!", theaterDTO1);
+        }
+
+        TheaterDTO theaterDTO1 =  TheaterDTO.convertToTheaterDTO(theaterService.updateTheater(id,theaterDTO));
+        return  new ResponseData(HttpStatus.CREATED.value(), "Update rạp thành công!", theaterDTO1);
+
+    }
+
 
 }

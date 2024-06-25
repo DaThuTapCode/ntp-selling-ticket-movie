@@ -44,9 +44,11 @@ private  final BookingService bookingService;
 
 private final EmailUtil emailUtil;
 
+
 @Value("${frontend.url}/payment-result")
 private String urlBaseSuccess;
-
+@Value("${frontend.url}")
+private String urlBase;
 
 /**
  * API tạo 1 giao dịch mới trả về đường dẫn đến trang thanh toán giao dịch*/
@@ -185,6 +187,7 @@ private String urlBaseSuccess;
                 Booking booking = bookingService.finById(Long.parseLong(id_booking)).orElseThrow(() -> new DataNotFoundException("Không tồn tại booking này!!"));
                 booking.setStatus(StatusBooking.CANCELED);
                 bookingService.save(booking);
+                resp.sendRedirect(urlBase);
                 //Giao dịch thất bại
          //       return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Thanh toán thất bại"), HttpStatus.BAD_REQUEST);
             }

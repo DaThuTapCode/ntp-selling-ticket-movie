@@ -47,7 +47,7 @@ public class ADShowtimeController {
 
                 if ((newShowTimeStart.isBefore(existingShowTimeEnd) && newShowTimeEnd.isAfter(existingShowTimeStart))) {
 
-                    return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Thời gian suất chiếu đang đè lên thời gian chiếu khác!" + existingShowTimeEnd), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Thời gian suất chiếu đang đè lên thời gian chiếu khác!\n Thời kết thúc show gần nhất: " + existingShowTimeEnd), HttpStatus.BAD_REQUEST);
                 }
             }
 

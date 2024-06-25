@@ -22,7 +22,7 @@ public class ShowTimeDTO {
 
     private Long id;
 
-    private String moviename;
+    private Movie movie;
 
     private String screenname;
 
@@ -35,7 +35,7 @@ public class ShowTimeDTO {
         ShowTimeDTO showTimeDTO = ShowTimeDTO
                 .builder()
                 .id(showTime.getId())
-                .moviename(showTime.getMovie() != null ? showTime.getMovie().getTitle() : null)
+                .movie(showTime.getMovie() != null ? showTime.getMovie() : null)
                 .screenname(showTime.getScreen() != null ? showTime.getScreen().getName() : null)
                 .showdate(showTime.getShowdate() != null ? showTime.getShowdate() : null)
                 .showtime(showTime.getShowtime())

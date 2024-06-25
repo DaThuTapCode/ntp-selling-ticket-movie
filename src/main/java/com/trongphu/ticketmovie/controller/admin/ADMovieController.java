@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 public class ADMovieController {
     private final MovieService movieService;
 
-
     /**
      * API Lấy ra toàn bộ bản ghi của movies
      * GET http://localhost:8080/api/v1/admin/movies/all
@@ -54,7 +53,6 @@ public class ADMovieController {
         Page<Movie> moviePage = movieService.findPageAllMovies(pageable);
         return new ResponsePageData(HttpStatus.OK.value(), "All movies", moviePage.getContent(), moviePage.getTotalElements());
     }
-
 
     /**
      * API Lấy ra toàn bộ bản ghi của movies có trạng thái ngừng chiếu (2)
@@ -84,16 +82,13 @@ public class ADMovieController {
     ) throws Exception {
         MultipartFile file = moviesDTO.getFile();
         if (file != null && !file.isEmpty()) {
-            // Kiểm tra kích thước file
-            if (file.getSize() > 10 * 1024 * 1024) { // Kích thước lớn hơn 10MB
+            if (file.getSize() > 10 * 1024 * 1024) {
                 return new ResponseEntity<>(new ResponseData(HttpStatus.PAYLOAD_TOO_LARGE.value(), "File phải nhỏ hơn 10MB"), HttpStatus.PAYLOAD_TOO_LARGE);
             }
-            // Kiểm tra định dạng file
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return new ResponseEntity<>(new ResponseData(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "File phải là ảnh!"), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             }
-            // Lưu file và cập nhật image trong moviesDTO
             String filename = storeFile(file);
             moviesDTO.setImage(filename);
           Movie movie =   movieService.crateMovie(moviesDTO);
@@ -111,16 +106,13 @@ public class ADMovieController {
     )throws Exception {
         MultipartFile file = moviesDTO.getFile();
         if (file != null && !file.isEmpty()) {
-            // Kiểm tra kích thước file
             if (file.getSize() > 10 * 1024 * 1024) { // Kích thước lớn hơn 10MB
                 return new ResponseEntity<>(new ResponseData(HttpStatus.PAYLOAD_TOO_LARGE.value(), "File phải nhỏ hơn 10MB"), HttpStatus.PAYLOAD_TOO_LARGE);
             }
-            // Kiểm tra định dạng file
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return new ResponseEntity<>(new ResponseData(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "File phải là ảnh!"), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             }
-            // Lưu file và cập nhật image trong moviesDTO
             String filename = storeFile(file);
             moviesDTO.setImage(filename);
             Movie movie =   movieService.updateMovie(id, moviesDTO);
@@ -140,17 +132,12 @@ public class ADMovieController {
      */
     private String storeFile(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        //Them UUID vao truc tiep file de dam bao ten file la duy nhat!!
         String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-        //Duong dan den thu muc muon luu  /////file java.nio.file
         Path uploadDir = Paths.get("uploads");
-        //Kiem tra va tao thu muc ne no khong ton tai
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
-        //DUong dan day du den file
         Path destination = Paths.get(uploadDir.toString(), uniqueFileName);
-        //Sao chep file vao thu muc dich
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFileName;
     }

@@ -25,13 +25,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Override
     Page<Booking> findAll(Pageable pageable);
 
-//    @Query("select count(bk) > 0 from booking bk where  bk.id = :id and bk.status = :status")
-//    boolean checkStatusAndExists(
-//            @Param("id") Long id
-//            , @Param("status") String status
-//    );
-
-    List<Booking> findByUser_Username(String username);
+    List<Booking> findByUser_UsernameAndAndStatusOrderByBookingdateDesc(String username, StatusBooking statusBooking);
 
     @Query("""
             select bk from booking bk 
@@ -42,14 +36,33 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findBookingByStatus(StatusBooking statusBooking);
 
-    @Query("select bk from booking bk where bk.id = :id and bk.user.username = :username")
+    @Query("select bk from booking bk where bk.id = :id and bk.user.username = :username and bk.status like 'CONFIRMED'")
     Booking findBookingByIđAnUserr(
             @Param("id") Long id
             , @Param("username") String username
     );
 
-    //thong ke
-    @Query("SELECT SUM(b.totalPrice) FROM booking b WHERE b.bookingdate BETWEEN :startDate AND :endDate")
+
+
+    /**
+     * Thong ke theo rap*/
+
+    /**
+     * Thong ke tong tien theo rap, ngay bat dau, ngay ket thuc
+     * */
+    @Query("SELECT SUM(bkd.price) FROM booking b join bookingdetail bkd on bkd.booking.id = b.id where b.status = 'CONFIRMED' and b.bookingdate between :startDate AND :endDate AND bkd.theater.id = :theaterId")
+    Double sumTotalPriceByDateAndTheater(LocalDateTime startDate, LocalDateTime endDate, Long theaterId);
+
+
+
+    /**
+     * Thong ke toan bo
+     * */
+
+    /**
+     * Thonng ke tong tien cua cac hoa don thanh toan thanh cong theo ngay bat dau va ngay ket thuc
+     * */
+    @Query("SELECT SUM(b.totalPrice) FROM booking b WHERE  b.status = 'CONFIRMED' AND b.bookingdate BETWEEN :startDate AND :endDate")
     Double sumTotalPriceByDate(LocalDateTime startDate, LocalDateTime endDate);
 
     @Query("SELECT COUNT(bd.id) FROM bookingdetail bd WHERE bd.booking.bookingdate BETWEEN :startDate AND :endDate")

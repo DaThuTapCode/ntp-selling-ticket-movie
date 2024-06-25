@@ -3,6 +3,7 @@ package com.trongphu.ticketmovie.util;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +33,17 @@ public class FileImageUploadUtil {
         //Sao chep file vao thu muc dich
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFileName;
+    }
+
+
+    public static boolean deleteFile(String filename) {
+        Path uploadDir = Paths.get("uploads");
+        Path destination = Paths.get(uploadDir.toString(), filename);
+        File file = new File(String.valueOf(destination));
+        if (file.exists()) {
+            return file.delete();
+        }
+        return false;
     }
 
 }

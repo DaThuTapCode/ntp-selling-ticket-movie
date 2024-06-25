@@ -25,9 +25,8 @@ public class StatisticalService implements IStatisticalService{
     private BookingRepository bookingRepository;
 
     @Override
-    public Double getDailyRevenue() {
-        LocalDate today = LocalDate.now();
-        return bookingRepository.sumTotalPriceByDate(today.atStartOfDay(), today.plusDays(1).atStartOfDay());
+    public Double getDailyRevenue(LocalDate date) {
+        return bookingRepository.sumTotalPriceByDate(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
     }
 
     @Override
@@ -49,6 +48,31 @@ public class StatisticalService implements IStatisticalService{
         LocalDate today = LocalDate.now();
         LocalDate startOfYear = today.withDayOfYear(1);
         return bookingRepository.sumTotalPriceByDate(startOfYear.atStartOfDay(), startOfYear.plusYears(1).atStartOfDay());
+    }
+
+    @Override
+    public Double getDailyRevenueTheater(LocalDate date, Long theaterId) {
+        try {
+            return bookingRepository.sumTotalPriceByDateAndTheater(date.atStartOfDay(), date.plusDays(1).atStartOfDay(),theaterId);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return  1d;
+        }
+    }
+
+    @Override
+    public Double getMonthlyRevenueTheater(LocalDate date, Long theaterId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+        return bookingRepository.sumTotalPriceByDateAndTheater(startOfMonth.atStartOfDay(), startOfMonth.plusMonths(1).atStartOfDay(), theaterId);
+    }
+
+    @Override
+    public Double getYearlyRevenueTheater(LocalDate date, Long theaterId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfYear = today.withDayOfYear(1);
+        return bookingRepository.sumTotalPriceByDateAndTheater(startOfYear.atStartOfDay(), startOfYear.plusYears(1).atStartOfDay(), theaterId);
     }
 
     @Override

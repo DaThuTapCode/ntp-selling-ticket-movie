@@ -2,6 +2,7 @@ package com.trongphu.ticketmovie.service;
 
 import com.trongphu.ticketmovie.dto.request.TheaterDTO;
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
+import com.trongphu.ticketmovie.exception.DataNotFoundException;
 import com.trongphu.ticketmovie.model.ShowTime;
 import com.trongphu.ticketmovie.model.Theater;
 
@@ -21,8 +22,10 @@ public interface ITheaterService {
 
     Optional<Theater> getById(Long id);
 
+
     Theater createTheater(TheaterDTO theaterDTO);
 
+    Theater updateTheater(Long id, TheaterDTO theaterDTO) throws Exception;
     /**
      * ADMIN
      */

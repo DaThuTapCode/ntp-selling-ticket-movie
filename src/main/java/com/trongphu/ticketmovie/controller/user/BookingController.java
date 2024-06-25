@@ -83,9 +83,6 @@ public class BookingController {
                 }
             }
 
-
-
-
             BookingDTO bookingResp = bookingService.save(convertBookingDTOToBooking(bookingDTO, user));
             for (BookingDetailDTO bookingDetailDTO : detailDTOList) {
                 bookingDetailService.save(convertBookingDetailDTOToBookingDetail(bookingDetailDTO, bookingResp));

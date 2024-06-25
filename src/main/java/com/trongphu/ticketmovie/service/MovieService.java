@@ -5,6 +5,7 @@ import com.trongphu.ticketmovie.exception.DataNotFoundException;
 import com.trongphu.ticketmovie.model.Movie;
 import com.trongphu.ticketmovie.repository.MovieRepository;
 import com.trongphu.ticketmovie.responsedata.MovieResponse;
+import com.trongphu.ticketmovie.util.FileImageUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -77,6 +78,7 @@ public class MovieService implements IMovieService {
             existsingMovie.setTrailer(moviesDTO.getTrailer());
             existsingMovie.setStatus(moviesDTO.getStatus());
             if(moviesDTO.getImage() != null){
+                FileImageUploadUtil.deleteFile(existsingMovie.getImage());
                 existsingMovie.setImage(moviesDTO.getImage());
             }
             return movieRepository.save(existsingMovie);

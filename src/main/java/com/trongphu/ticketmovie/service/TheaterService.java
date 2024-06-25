@@ -1,9 +1,11 @@
 package com.trongphu.ticketmovie.service;
 
 import com.trongphu.ticketmovie.dto.request.TheaterDTO;
+import com.trongphu.ticketmovie.exception.DataNotFoundException;
 import com.trongphu.ticketmovie.model.ShowTime;
 import com.trongphu.ticketmovie.model.Theater;
 import com.trongphu.ticketmovie.repository.TheaterRepository;
+import com.trongphu.ticketmovie.util.FileImageUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,22 @@ public class TheaterService implements ITheaterService {
     @Override
     public Theater createTheater(TheaterDTO theaterDTO) {
         return repository.save(Theater.convertToTheater(theaterDTO));
+    }
+
+    @Override
+    public Theater updateTheater(Long id,TheaterDTO theaterDTO) throws Exception {
+        Theater theater = repository.findById(id).orElseThrow(() -> new DataNotFoundException("Rạp update không hợp lệ!"));
+        theater.setDescription(theaterDTO.getDescription());
+        theater.setEmail(theaterDTO.getEmail());
+        if(theaterDTO.getEmail() != null){
+            FileImageUploadUtil.deleteFile(theater.getImage());
+            theater.setImage(theaterDTO.getImage());
+        }
+        theater.setLocation(theaterDTO.getLocation());
+        theater.setPhone(theaterDTO.getPhone());
+        theater.setName(theater.getName());
+
+        return repository.save(theater);
     }
 
     /**

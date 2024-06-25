@@ -2,6 +2,7 @@ package com.trongphu.ticketmovie.service;
 
 import com.trongphu.ticketmovie.component.JwtTokenUtil;
 import com.trongphu.ticketmovie.dto.request.UserDTO;
+import com.trongphu.ticketmovie.dto.respone.UserLoginResponse;
 import com.trongphu.ticketmovie.exception.DataNotFoundException;
 import com.trongphu.ticketmovie.exception.ExistsDataException;
 import com.trongphu.ticketmovie.exception.PermissionDenyException;
@@ -12,6 +13,8 @@ import com.trongphu.ticketmovie.repository.UserRepository;
 import com.trongphu.ticketmovie.util.StatusUserEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -91,7 +94,6 @@ public class UserService implements IUserService {
                 .build();
         newUser.setRole(role);
 
-        //Kiem tra neu co account id, khong yeu cau password
         if (userDTO.getFacebookacountid() != null && userDTO.getGoogleacountid()  != null){
             if (userDTO.getFacebookacountid() == 0 && userDTO.getGoogleacountid() == 0) {
                 String password = userDTO.getPassword();
@@ -106,16 +108,14 @@ public class UserService implements IUserService {
     public String login(String userName, String password) throws DataNotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername(userName);
         if (optionalUser.isEmpty()) {
-            throw new DataNotFoundException("Invalid User name or password!");
+            throw new DataNotFoundException("Sai tài khoản hoặc mật khẩu!");
         }
         if (optionalUser.get().getFacebookacountid() == 0
                 && optionalUser.get().getGoogleacountid() == 0) {
             if (!passwordEncoder.matches(password, optionalUser.get().getPassword())) {
-                throw new DataNotFoundException("Invalid User name or password!!");
+                throw new DataNotFoundException("Sai tài khoản hoặc mật khẩu!!");
             }
         }
-
-        //authenticate with java Spring security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 userName, password, optionalUser.get().getAuthorities()
         );
@@ -123,6 +123,38 @@ public class UserService implements IUserService {
         return jwtTokenUtil.gennerateToke(optionalUser.get());
     }
 
+    @Override
+    public void changePassword(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserDTO changeInfoUser(User user) throws ExistsDataException {
+
+
+//        if (userRepository.existsByEmail(user.getEmail())) {
+//            throw new ExistsDataException("Email đã tồn tại!");
+//        }
+       User user1 = userRepository.save(user);
+
+      return   UserDTO.builder()
+              .fullname(user1.getFullname())
+              .email(user1.getEmail())
+              .image(user1.getEmail())
+              .username(user1.getUsername())
+              .role(user1.getRole().getId())
+              .build();
+    }
+
+    @Override
+    public boolean existEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Page<User> findPageAllUser(Pageable pageable){
+        return userRepository.findAll(pageable);
+    }
 
     public UserDTO convertToDTO(User user) {
         UserDTO userDTO = new UserDTO();
