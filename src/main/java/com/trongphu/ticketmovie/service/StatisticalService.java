@@ -1,8 +1,12 @@
 package com.trongphu.ticketmovie.service;
 
+import com.trongphu.ticketmovie.dto.request.BookingDTO;
+import com.trongphu.ticketmovie.dto.request.MovieStatistical;
 import com.trongphu.ticketmovie.model.Booking;
 import com.trongphu.ticketmovie.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -116,5 +120,20 @@ public class StatisticalService implements IStatisticalService{
         LocalDate today = LocalDate.now();
         LocalDate startOfYear = today.withDayOfYear(1);
         return bookingRepository.countTicketsByDate(startOfYear.atStartOfDay(), startOfYear.plusYears(1).atStartOfDay());
+    }
+
+    @Override
+    public Long getCountShowtimeByMovieId(Long movieid) {
+        return bookingRepository.getCountShowtimebyidMovie(movieid);
+    }
+
+    @Override
+    public Page<Booking> getBookingByTheaterId(Pageable pageable, Long theaterid) {
+        return bookingRepository.findAllByTheaterId(theaterid,pageable);
+    }
+
+    @Override
+    public Page<Object[]> getListRevenueMovie(Pageable pageable, String title) {
+        return bookingRepository.findListRevenueMovie(pageable, title);
     }
 }

@@ -25,6 +25,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Override
     Page<Booking> findAll(Pageable pageable);
 
+    @Query("SELECT distinct b FROM booking b JOIN bookingdetail bd on bd.booking.id = b.id  WHERE (:theaterId is null or bd.theater.id = :theaterId) and b.status like 'CONFIRMED' order by b.bookingdate desc")
+    Page<Booking> findAllByTheaterId(Long theaterId, Pageable pageable);
+
+
     List<Booking> findByUser_UsernameAndAndStatusOrderByBookingdateDesc(String username, StatusBooking statusBooking);
 
     @Query("""
@@ -43,16 +47,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     );
 
 
-
     /**
      * Thong ke theo rap*/
 
     /**
      * Thong ke tong tien theo rap, ngay bat dau, ngay ket thuc
-     * */
+     */
     @Query("SELECT SUM(bkd.price) FROM booking b join bookingdetail bkd on bkd.booking.id = b.id where b.status = 'CONFIRMED' and b.bookingdate between :startDate AND :endDate AND bkd.theater.id = :theaterId")
     Double sumTotalPriceByDateAndTheater(LocalDateTime startDate, LocalDateTime endDate, Long theaterId);
-
 
 
     /**
@@ -61,7 +63,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     /**
      * Thonng ke tong tien cua cac hoa don thanh toan thanh cong theo ngay bat dau va ngay ket thuc
-     * */
+     */
     @Query("SELECT SUM(b.totalPrice) FROM booking b WHERE  b.status = 'CONFIRMED' AND b.bookingdate BETWEEN :startDate AND :endDate")
     Double sumTotalPriceByDate(LocalDateTime startDate, LocalDateTime endDate);
 
@@ -77,4 +79,24 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT m.title, COUNT(s.id) AS showtimeCount FROM bookingdetail bd JOIN bd.showtime s JOIN s.movie m GROUP BY m.title ORDER BY showtimeCount DESC")
     List<Object[]> findTopMoviesByShowtimeCount(int limit);
+
+    @Query("select  m.id, m.title, m.image, sum(bd.price) as revenue, count(s.movie.title) as totalshowtime from bookingdetail bd left join  bd.showtime s left join s.movie m where bd.booking.status = 'CONFIRMED' and (:title is null or m.title like %:title%) group by m.id  order by revenue desc ")
+    Page<Object[]> findListRevenueMovie2(Pageable pageable, String title);
+
+    @Query("""
+            select  m.id, m.title, m.image, sum(bd.price) as revenue, count(s.movie.title) as totalshowtime 
+            from movies m
+           left join showtimes s on s.movie.id = m.id
+           left join bookingdetail bd on bd.showtime.id = s.id
+           left join booking b on bd.booking.id = b.id
+            where 
+                b.status = 'CONFIRMED' or b.status is null                 
+                and (:title is null or m.title like %:title%) 
+                group by m.id   order by revenue desc 
+            """)
+    Page<Object[]> findListRevenueMovie(Pageable pageable, String title);
+
+    @Query("select count (s.id) from showtimes s where  s.movie.id = :movieid ")
+    Long getCountShowtimebyidMovie(Long movieid);
+
 }

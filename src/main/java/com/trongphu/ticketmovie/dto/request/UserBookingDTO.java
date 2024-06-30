@@ -16,6 +16,8 @@ public class UserBookingDTO {
 
     private String username;
 
+    private String fullname;
+
     private String email;
 
     public static UserBookingDTO convertToUserBookingDTO(User user){
@@ -23,6 +25,7 @@ public class UserBookingDTO {
                 .builder()
                 .id(user.getId())
                 .username(user.getUsername())
+                .fullname(user.getFullname())
                 .email(user.getEmail())
                 .build();
 

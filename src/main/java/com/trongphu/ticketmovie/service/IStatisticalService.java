@@ -1,5 +1,11 @@
 package com.trongphu.ticketmovie.service;
 
+import com.trongphu.ticketmovie.dto.request.BookingDTO;
+import com.trongphu.ticketmovie.dto.request.MovieStatistical;
+import com.trongphu.ticketmovie.model.Booking;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,4 +33,9 @@ public interface IStatisticalService {
     Long getTicketCountByWeek();
     Long getTicketCountByMonth();
     Long getTicketCountByYear();
+
+    Long getCountShowtimeByMovieId(Long movieid);
+
+    Page<Booking> getBookingByTheaterId(Pageable pageable, Long theaterid);
+    Page<Object[]> getListRevenueMovie(Pageable pageable, String  title);
 }

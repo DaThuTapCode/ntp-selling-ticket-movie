@@ -20,14 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @Builder
 public class ChangeInfoUserDTO {
-    @Email(message = "Invalid email format")
-    @NotEmpty(message = "Email is required")
+    @Email(message = "Sai định dạng email!")
+    @NotEmpty(message = "Email là bắt buộc")
     private String email;
 
     @Size(min = 3, max = 100, message = "Tên từ 3 đến 100 ký tự!")
     private String fullname;
 
-    @NotBlank(message = "Email không được trống!")
     private MultipartFile file;
 
 }

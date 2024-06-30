@@ -1,18 +1,28 @@
 package com.trongphu.ticketmovie.controller.admin;
 
+import com.trongphu.ticketmovie.dto.request.BookingDTO;
+import com.trongphu.ticketmovie.dto.request.MovieStatistical;
 import com.trongphu.ticketmovie.dto.respone.ResponseData;
+import com.trongphu.ticketmovie.dto.respone.ResponsePageData;
+import com.trongphu.ticketmovie.model.Booking;
 import com.trongphu.ticketmovie.service.BookingDetailService;
 import com.trongphu.ticketmovie.service.BookingService;
 import com.trongphu.ticketmovie.service.IStatisticalService;
 import com.trongphu.ticketmovie.service.StatisticalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Trong Phu on 6/8/2024 13:54:19
@@ -76,6 +86,36 @@ public class ADStatisticalController {
         return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Doanh thu năm", statisticalService.getYearRevenue()), HttpStatus.OK);
     }
 
+    @GetMapping("/list-revenue-movie")
+    public ResponseEntity<ResponseData> getListRevenueMovie(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String title
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Object[]> list = statisticalService.getListRevenueMovie(pageable, title);
+        List<MovieStatistical> movieStatisticalList = new ArrayList<>();
+
+        for (Object[] o : list.getContent()) {
+            MovieStatistical movieStatistical = new MovieStatistical((Long)o[0], (String) o[1], (String) o[2], (BigDecimal) o[3] == null ? BigDecimal.ZERO : (BigDecimal) o[3], statisticalService.getCountShowtimeByMovieId((Long) o[0]));
+         movieStatisticalList.add(movieStatistical);
+        }
+
+        return new ResponseEntity<>(new ResponsePageData(HttpStatus.OK.value(),"Danh sách doanh thu tất cả các phim", movieStatisticalList, list.getTotalPages() ), HttpStatus.OK);
+    }
+
+
+    @GetMapping("page-booking-by-theaterid")
+    public ResponseEntity<ResponseData> getPageBookingByTheater(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false) Long theaterid
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Booking> bookingPage = statisticalService.getBookingByTheaterId(pageable, theaterid);
+        List<BookingDTO> bookingDTOList = bookingPage.getContent().stream().map(BookingDTO::convertoBookingDTO).toList();
+        return new ResponseEntity<>(new ResponsePageData(HttpStatus.OK.value(), "get page theater by id", bookingDTOList, bookingPage.getTotalElements()), HttpStatus.OK);
+    }
     @GetMapping("/top-movies-by-revenue")
     public ResponseEntity<ResponseData> getTopMoviesByRevenue(
             @RequestParam int limit
@@ -88,7 +128,6 @@ public class ADStatisticalController {
             @RequestParam int limit
     ) {
         return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Lấy top phim có doanh thu cao theo ngày", statisticalService.getTopCurrentMoviesByRevenue(limit)), HttpStatus.OK);
-
     }
 
     @GetMapping("/top-movies-by-showtime-count")
@@ -117,5 +156,9 @@ public class ADStatisticalController {
     public ResponseEntity<ResponseData> getTicketCountByYear() {
         return new ResponseEntity<>(new ResponseData(HttpStatus.OK.value(), "Lấy top phim có doanh thu cao", statisticalService.getTicketCountByYear()), HttpStatus.OK);
     }
+
+
+
+
 
 }

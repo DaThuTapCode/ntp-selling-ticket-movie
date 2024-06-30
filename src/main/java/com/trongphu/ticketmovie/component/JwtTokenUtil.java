@@ -29,7 +29,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtTokenUtil {
     @Value("${jwt.expiration}")
-    private int expiration; // Lưu vào 1 biến môi trường
+    private int expiration;
 
     @Value("${jwt.secretKey}")
     private String secretKey;

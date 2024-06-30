@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class RolesDTO {
 
-    @NotEmpty(message = "Name roles cannot be empty!!")
+    @NotEmpty(message = "Tên chức vụ không được trống!!")
     private String name;
 
     private String description;
