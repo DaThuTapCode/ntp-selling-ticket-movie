@@ -1,20 +1,11 @@
-# Sử dụng image cơ sở mà có Java đã cài đặt
-FROM openjdk:17
+# Sử dụng một image Java base
+FROM openjdk:17-jdk-slim
 
-# Thư mục làm việc mặc định trong container
-#WORKDIR /app
+# Tạo thư mục cho ứng dụng
+WORKDIR /app
 
-# Sao chép file JAR đã đóng gói vào container
-ADD target/ticket-movie-1.0.war /app/ticket-movie-1.0.war
-#COPY ./target/ticket-movie-1.0.war /app/ticket-movie-1.0.war
+# Sao chép file JAR vào thư mục làm việc
+COPY target/ticket-movie-1.0.jar app.jar
 
-# Thiết lập biến môi trường cho MySQL
-#ENV SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/ntp_booking_movie
-#ENV SPRING_DATASOURCE_USERNAME=root
-#ENV SPRING_DATASOURCE_PASSWORD=130904
-
-# Cổng mà ứng dụng Spring Boot lắng nghe
-#EXPOSE 8080
-
-# Lệnh để khởi động ứng dụng Spring Boot khi container được khởi chạy
-ENTRYPOINT ["java", "-jar", "ticket-movie-1.0.war"]
+# Chạy ứng dụng khi container khởi động
+ENTRYPOINT ["java", "-jar", "app.jar"]

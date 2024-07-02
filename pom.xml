@@ -11,7 +11,7 @@
     <groupId>com.trongphu</groupId>
     <artifactId>ticket-movie</artifactId>
     <version>1.0</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>ticket-movie</name>
     <description>Trong Phu he he</description>
     <properties>
